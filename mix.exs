@@ -6,7 +6,7 @@ defmodule Linklab.DomainLogic.Mixfile do
 
   def project do
     [
-      app: :domain_logic,
+      app: :linklab_domain_logic,
       version: @version,
       elixir: @elixir_version,
       elixirc_paths: elixirc_paths(Mix.env()),
