@@ -26,10 +26,10 @@ defmodule Linklab.DomainLogic.Mixfile do
   defp deps do
     [
       # ECTO
-      {:ecto, "~> 2.1"},
-      {:mariaex, ">= 0.0.0", only: :test},
+      {:ecto_sql, "~>  3.0"},
+      {:mariaex, "~> 0.9", only: :test},
       # PAGINATION
-      {:scrivener_ecto, "~> 1.3"},
+      {:scrivener_ecto, "~> 2.0"},
 
       # DEV AND TEST
       {:dialyxir, "~> 0.5", only: :dev, runtime: false},
