@@ -3,7 +3,6 @@ use Mix.Config
 # Configure your database
 config :linklab_domain_logic, DomainLogic.Ecto.Test.Repo,
   load_from_system_env: false,
-  adapter: Ecto.Adapters.MySQL,
   username: "root",
   password: "",
   database: "domain_logic_test",
