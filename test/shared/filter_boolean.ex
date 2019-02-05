@@ -1,0 +1,255 @@
+defmodule Linklab.DomainLogic.Test.FilterBoolean do
+
+  defmacro test_filter_by_boolean(domain, table, model, field) do
+    quote do
+      test_filter_by_boolean(unquote(domain), unquote(table), unquote(model), unquote(field), %{})
+    end
+  end
+
+  defmacro test_filter_by_boolean(domain, table, model, field, params) do
+    quote do
+      field_type = unquote(domain).filter_fields()[unquote(field)]
+      assert field_type == :boolean
+
+      ######################################
+      # INVALID OP
+      ######################################
+      assert_raise ArgumentError, ~r/Invalid operation/, fn ->
+        op = [{unquote(field), :invalid, 1111}]
+
+        unquote(domain).filter_by(unquote(table), op)
+      end
+
+      ######################################
+      # NOT A BOOLEAN
+      ######################################
+      assert_raise ArgumentError, ~r/Invalid boolean/, fn ->
+        op = [{unquote(field), :eq, "error value"}]
+
+        unquote(domain).filter_by(unquote(table), op)
+      end
+
+      ######################################
+      # CONVERT TO BOOLEAN  : yes
+      ######################################
+      r1 = insert(unquote(model), Map.put(unquote(params), unquote(field), false))
+      r2 = insert(unquote(model), Map.put(unquote(params), unquote(field), true))
+      r3 = insert(unquote(model), Map.put(unquote(params), unquote(field), false))
+
+      op = [{unquote(field), :eq, "yes"}]
+
+      results =
+        unquote(table)
+        |> unquote(domain).filter_by(op)
+        |> Linklab.DomainLogic.Test.Repo.all()
+        |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
+
+      assert results == [true]
+
+      Linklab.DomainLogic.Test.Repo.delete(r1)
+      Linklab.DomainLogic.Test.Repo.delete(r2)
+      Linklab.DomainLogic.Test.Repo.delete(r3)
+
+      ######################################
+      # CONVERT TO BOOLEAN  : true
+      ######################################
+      r1 = insert(unquote(model), Map.put(unquote(params), unquote(field), false))
+      r2 = insert(unquote(model), Map.put(unquote(params), unquote(field), true))
+      r3 = insert(unquote(model), Map.put(unquote(params), unquote(field), false))
+
+      op = [{unquote(field), :eq, "true"}]
+
+      results =
+        unquote(table)
+        |> unquote(domain).filter_by(op)
+        |> Linklab.DomainLogic.Test.Repo.all()
+        |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
+
+      assert results == [true]
+
+      Linklab.DomainLogic.Test.Repo.delete(r1)
+      Linklab.DomainLogic.Test.Repo.delete(r2)
+      Linklab.DomainLogic.Test.Repo.delete(r3)
+
+      ######################################
+      # CONVERT TO BOOLEAN  : 1
+      ######################################
+      r1 = insert(unquote(model), Map.put(unquote(params), unquote(field), false))
+      r2 = insert(unquote(model), Map.put(unquote(params), unquote(field), true))
+      r3 = insert(unquote(model), Map.put(unquote(params), unquote(field), false))
+
+      op = [{unquote(field), :eq, 1}]
+
+      results =
+        unquote(table)
+        |> unquote(domain).filter_by(op)
+        |> Linklab.DomainLogic.Test.Repo.all()
+        |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
+
+      assert results == [true]
+
+      Linklab.DomainLogic.Test.Repo.delete(r1)
+      Linklab.DomainLogic.Test.Repo.delete(r2)
+      Linklab.DomainLogic.Test.Repo.delete(r3)
+
+      ######################################
+      # CONVERT TO BOOLEAN  : no
+      ######################################
+      r1 = insert(unquote(model), Map.put(unquote(params), unquote(field), true))
+      r2 = insert(unquote(model), Map.put(unquote(params), unquote(field), false))
+      r3 = insert(unquote(model), Map.put(unquote(params), unquote(field), true))
+
+      op = [{unquote(field), :eq, "no"}]
+
+      results =
+        unquote(table)
+        |> unquote(domain).filter_by(op)
+        |> Linklab.DomainLogic.Test.Repo.all()
+        |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
+
+      assert results == [false]
+
+      Linklab.DomainLogic.Test.Repo.delete(r1)
+      Linklab.DomainLogic.Test.Repo.delete(r2)
+      Linklab.DomainLogic.Test.Repo.delete(r3)
+
+      ######################################
+      # CONVERT TO BOOLEAN  : false
+      ######################################
+      r1 = insert(unquote(model), Map.put(unquote(params), unquote(field), true))
+      r2 = insert(unquote(model), Map.put(unquote(params), unquote(field), false))
+      r3 = insert(unquote(model), Map.put(unquote(params), unquote(field), true))
+
+      op = [{unquote(field), :eq, "false"}]
+
+      results =
+        unquote(table)
+        |> unquote(domain).filter_by(op)
+        |> Linklab.DomainLogic.Test.Repo.all()
+        |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
+
+      assert results == [false]
+
+      Linklab.DomainLogic.Test.Repo.delete(r1)
+      Linklab.DomainLogic.Test.Repo.delete(r2)
+      Linklab.DomainLogic.Test.Repo.delete(r3)
+
+      ######################################
+      # CONVERT TO BOOLEAN  : 0
+      ######################################
+      r1 = insert(unquote(model), Map.put(unquote(params), unquote(field), true))
+      r2 = insert(unquote(model), Map.put(unquote(params), unquote(field), false))
+      r3 = insert(unquote(model), Map.put(unquote(params), unquote(field), true))
+
+      op = [{unquote(field), :eq, 0}]
+
+      results =
+        unquote(table)
+        |> unquote(domain).filter_by(op)
+        |> Linklab.DomainLogic.Test.Repo.all()
+        |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
+
+      assert results == [false]
+
+      Linklab.DomainLogic.Test.Repo.delete(r1)
+      Linklab.DomainLogic.Test.Repo.delete(r2)
+      Linklab.DomainLogic.Test.Repo.delete(r3)
+
+      ######################################
+      # EQ
+      ######################################
+      r1 = insert(unquote(model), Map.put(unquote(params), unquote(field), false))
+      r2 = insert(unquote(model), Map.put(unquote(params), unquote(field), true))
+      r3 = insert(unquote(model), Map.put(unquote(params), unquote(field), false))
+
+      op = [{unquote(field), :eq, true}]
+
+      results =
+        unquote(table)
+        |> unquote(domain).filter_by(op)
+        |> Linklab.DomainLogic.Test.Repo.all()
+        |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
+
+      assert results == [true]
+
+      Linklab.DomainLogic.Test.Repo.delete(r1)
+      Linklab.DomainLogic.Test.Repo.delete(r2)
+      Linklab.DomainLogic.Test.Repo.delete(r3)
+
+      ######################################
+      # NE
+      ######################################
+      r1 = insert(unquote(model), Map.put(unquote(params), unquote(field), false))
+      r2 = insert(unquote(model), Map.put(unquote(params), unquote(field), true))
+      r3 = insert(unquote(model), Map.put(unquote(params), unquote(field), false))
+
+      op = [{unquote(field), :ne, true}]
+
+      results =
+        unquote(table)
+        |> unquote(domain).filter_by(op)
+        |> Linklab.DomainLogic.Test.Repo.all()
+        |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
+
+      assert results == [false, false]
+
+      Linklab.DomainLogic.Test.Repo.delete(r1)
+      Linklab.DomainLogic.Test.Repo.delete(r2)
+      Linklab.DomainLogic.Test.Repo.delete(r3)
+
+      ######################################
+      # GT
+      ######################################
+      assert_raise ArgumentError, ~r/Invalid operation/, fn ->
+        op = [{unquote(field), :gt, true}]
+
+        unquote(domain).filter_by(unquote(table), op)
+      end
+
+      ######################################
+      # GE
+      ######################################
+      assert_raise ArgumentError, ~r/Invalid operation/, fn ->
+        op = [{unquote(field), :ge, true}]
+
+        unquote(domain).filter_by(unquote(table), op)
+      end
+
+      ######################################
+      # LT
+      ######################################
+      assert_raise ArgumentError, ~r/Invalid operation/, fn ->
+        op = [{unquote(field), :lt, true}]
+
+        unquote(domain).filter_by(unquote(table), op)
+      end
+
+      ######################################
+      # LE
+      ######################################
+      assert_raise ArgumentError, ~r/Invalid operation/, fn ->
+        op = [{unquote(field), :le, true}]
+
+        unquote(domain).filter_by(unquote(table), op)
+      end
+
+      ######################################
+      # LIKE
+      ######################################
+      assert_raise ArgumentError, ~r/Invalid operation/, fn ->
+        op = [{unquote(field), :lk, true}]
+
+        unquote(domain).filter_by(unquote(table), op)
+      end
+
+      ######################################
+      # IN
+      ######################################
+      assert_raise ArgumentError, ~r/Invalid operation/, fn ->
+        op = [{unquote(field), :in, true}]
+
+        unquote(domain).filter_by(unquote(table), op)
+      end
+    end
+  end
+end

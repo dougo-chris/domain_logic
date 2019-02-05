@@ -3,9 +3,14 @@ defmodule Linklab.DomainLogic.SortLib do
 
   import Ecto.Query
 
-  @callback sort_fields() :: list()
-  @callback sort_fields(:associations) :: list()
-  @callback sort_by(Ecto.Schema.t(), any()) :: any()
+  alias Linklab.DomainLogic.SortLib
+
+  @type sort_field :: {atom, true}
+  @type sort :: {atom | String.t(), :asc | :desc | String.t()}
+
+  @callback sort_fields() :: list(sort_field)
+  @callback sort_by(Ecto.Schema.t(), sort | list(sort)) :: Ecto.Queryable.t()
+  @callback sort_validate(sort | list(sort)) :: list(sort)
 
   defmacro __using__(_opts) do
     quote do
@@ -14,98 +19,109 @@ defmodule Linklab.DomainLogic.SortLib do
       @behaviour Linklab.DomainLogic.SortLib
 
       @impl true
-      def sort_fields, do: []
-      @impl true
-      def sort_fields(:associations), do: []
-      defoverridable sort_fields: 0, sort_fields: 1
-
-      @type sort :: {atom | String.t(), :asc | :desc | String.t()}
+      @spec sort_fields() :: list(SortLib.sort_field)
+      def sort_fields, do: %{}
+      defoverridable sort_fields: 0
 
       @impl true
-      @spec sort_by(Ecto.Queryable.t(), sort | list(sort)) :: Ecto.Queryable.t()
+      @spec sort_by(Ecto.Queryable.t(), SortLib.sort | list(SortLib.sort)) :: Ecto.Queryable.t()
       def sort_by(query, sorts) when is_list(sorts) do
         fields = sort_fields()
-        associations = sort_fields(:associations)
-
-        Linklab.DomainLogic.SortLib.__sort_builder__(query, sorts, fields, associations)
+        Linklab.DomainLogic.SortLib.__sort_builder__(query, sorts, fields)
       end
 
       def sort_by(query, sort), do: sort_by(query, [sort])
+
+      @impl true
+      @spec sort_validate(SortLib.sort | list(SortLib.sort)) :: list(SortLib.sort)
+      def sort_validate(sorts) when is_list(sorts) do
+        fields = sort_fields()
+        []
+        |> Linklab.DomainLogic.SortLib.__sort_validator__(sorts, fields)
+        |> Enum.reverse()
+      end
+
+      def sort_validate(sort), do: sort_validate([sort])
     end
   end
 
   defmacro register_sort(do: block) do
     quote do
       Module.register_attribute(__MODULE__, :sort_fields, accumulate: true)
-      Module.register_attribute(__MODULE__, :sort_field_associations, accumulate: true)
 
       unquote(block)
 
       @impl true
       def sort_fields, do: Enum.reverse(@sort_fields)
-
-      @impl true
-      def sort_fields(:associations), do: Enum.reverse(@sort_field_associations)
     end
   end
 
-  defmacro sort(name, options \\ []) do
-    field_name = options[:source] || name
-    association = options[:association] || false
-
+  defmacro sort(name) do
     quote do
-      Module.put_attribute(__MODULE__, :sort_fields, {unquote(name), unquote(field_name)})
-
-      if unquote(association) do
-        Module.put_attribute(__MODULE__, :sort_field_associations, {unquote(name), unquote(association)})
-      end
+      Module.put_attribute(__MODULE__, :sort_fields, {unquote(name), true})
     end
   end
 
   @doc false
-  def __sort_builder__(query, [], _fields, _associations), do: query
+  def __sort_builder__(query, [], _fields), do: query
 
-  def __sort_builder__(query, [{name, dir} | tail], fields, associations) do
+  def __sort_builder__(query, [{name, dir} | tail], fields) do
     with {:ok, name} <- validate_field_name(fields, name),
          {:ok, dir} <- validate_field_dir(dir) do
       query
-      |> sort_builder_item(fields[name], dir, associations[name])
-      |> __sort_builder__(tail, fields, associations)
+      |> sort_builder_item(name, dir)
+      |> __sort_builder__(tail, fields)
     else
-      {:error, reason} -> raise ArgumentError, "Invalid sort : #{reason}"
+      {:error, reason} ->
+        raise ArgumentError, "Invalid sort : #{reason}"
     end
   end
 
-  defp sort_builder_item(query, name, dir, nil) do
+  @doc false
+  def __sort_validator__(acc, [], _fields), do: acc
+
+  def __sort_validator__(acc, [{name, dir} | tail], fields) do
+    with {:ok, name} <- validate_field_name(fields, name),
+         {:ok, dir} <- validate_field_dir(dir) do
+      __sort_validator__([{name, dir} | acc], tail, fields)
+    else
+      {:error, _reason} ->
+        __sort_validator__(acc, tail, fields)
+    end
+  end
+
+  defp sort_builder_item(query, name, dir) do
     case dir do
       :asc -> from(q in query, order_by: [asc: field(q, ^name)])
       _ -> from(q in query, order_by: [desc: field(q, ^name)])
     end
   end
 
-  defp sort_builder_item(query, name, dir, association) do
-    case dir do
-      :asc -> from(q in query, join: ac in assoc(q, ^association), order_by: [asc: field(ac, ^name)])
-      _ -> from(q in query, join: ac in assoc(q, ^association), order_by: [desc: field(ac, ^name)])
-    end
-  end
-
   defp validate_field_name(fields, name) when is_atom(name) do
-    case fields[name] do
-      nil -> {:error, "Invalid field : #{name}"}
-      _ -> {:ok, name}
+    case Keyword.get(fields, name) do
+      nil ->
+        {:error, "Invalid field : #{name}"}
+      _ ->
+        {:ok, name}
     end
   end
 
   defp validate_field_name(fields, name) do
     case Enum.find(fields, fn {field, _} -> "#{field}" == name end) do
-      nil -> {:error, "Invalid field : #{name}"}
-      {name, _} -> {:ok, name}
+      nil ->
+        {:error, "Invalid field : #{name}"}
+      {name, _} ->
+        {:ok, name}
     end
   end
 
-  defp validate_field_dir(dir) when dir in [:asc, :desc], do: {:ok, dir}
-  defp validate_field_dir(dir) when dir in ["asc", "desc"], do: {:ok, String.to_atom(dir)}
+  defp validate_field_dir(dir) when dir in [:asc, :desc] do
+    {:ok, dir}
+  end
+
+  defp validate_field_dir(dir) when dir in ["asc", "desc"] do
+    {:ok, String.to_atom(dir)}
+  end
 
   defp validate_field_dir(dir) do
     {:error, "Invalid dir : #{dir}"}

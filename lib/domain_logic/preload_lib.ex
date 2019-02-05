@@ -3,7 +3,7 @@ defmodule Linklab.DomainLogic.PreloadLib do
 
   import Ecto.Query
 
-  @callback preload_with(Ecto.Schema.t(), any()) :: any
+  @callback preload_with(Ecto.Schema.t(), any()) :: Ecto.Queryable.t()
 
   defmacro __using__(_opts) do
     quote do

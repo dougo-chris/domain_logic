@@ -1,7 +1,7 @@
 use Mix.Config
 
 # Configure your database
-config :linklab_domain_logic, DomainLogic.Ecto.Test.Repo,
+config :linklab_domain_logic, Linklab.DomainLogic.Test.Repo,
   load_from_system_env: false,
   username: "root",
   password: "",

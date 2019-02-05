@@ -5,14 +5,14 @@ defmodule Linklab.DomainLogic.Filter.FilterBooleanTest do
 
   describe "validate_value" do
     test "valid true value and operation" do
-      ["true", "True", "TRUE", " tRue Enough", "yes", 1, true]
+      ["true", "yes", 1, true]
       |> Enum.each(fn value ->
         assert FilterBoolean.validate_value(value, :eq) == {:ok, true}
       end)
     end
 
     test "valid false value and operation" do
-      ["false", "False", "FALSE", " fAlse Enough", "no", 0, false]
+      ["false", "no", 0, false]
       |> Enum.each(fn value ->
         assert FilterBoolean.validate_value(value, :eq) == {:ok, false}
       end)
@@ -23,7 +23,7 @@ defmodule Linklab.DomainLogic.Filter.FilterBooleanTest do
     end
 
     test "invalid operation" do
-      [:gt, :ge, :lt, :le, :lk, :in, :ne]
+      [:gt, :ge, :lt, :le, :lk, :in]
       |> Enum.each(fn operation ->
         assert FilterBoolean.validate_value(true, operation) == {:error, "Invalid boolean"}
       end)
