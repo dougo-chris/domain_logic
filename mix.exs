@@ -27,11 +27,11 @@ defmodule Linklab.DomainLogic.Mixfile do
     [
       # ECTO
       {:ecto_sql, "~>  3.0"},
-      {:mariaex, "~> 0.9", only: :test},
       # PAGINATION
       {:scrivener_ecto, "~> 2.0"},
 
       # DEV AND TEST
+      {:mariaex, "~> 0.9", only: :test},
       {:dialyxir, "~> 0.5", only: :dev, runtime: false},
       {:ex_machina, "~> 2.2", only: :test},
       {:mix_test_watch, "~> 0.9", only: :dev, runtime: false}

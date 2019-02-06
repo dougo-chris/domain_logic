@@ -1,18 +1,18 @@
-defmodule Linklab.DomainLogic.Test.Factory do
+defmodule Linklab.DomainLogic.Factory do
   @moduledoc false
 
   # with Ecto
-  use ExMachina.Ecto, repo: Linklab.DomainLogic.Test.Repo
+  use ExMachina.Ecto, repo: Linklab.DomainLogic.Repo
 
   def category_factory do
-    %Linklab.DomainLogic.Test.Db.CategoryTable{
+    %Linklab.DomainLogic.Db.CategoryTable{
       title: "Elixir"
     }
   end
 
   def product_factory do
     name = sequence(:name, &"Use ExMachina! (Part #{&1})")
-    %Linklab.DomainLogic.Test.Db.ProductTable{
+    %Linklab.DomainLogic.Db.ProductTable{
       name: name,
       price: 100,
       available: false,
@@ -21,7 +21,7 @@ defmodule Linklab.DomainLogic.Test.Factory do
   end
 
   def variant_factory do
-    %Linklab.DomainLogic.Test.Db.VariantTable{
+    %Linklab.DomainLogic.Db.VariantTable{
       code: "VAR_1",
       product: build(:product),
     }

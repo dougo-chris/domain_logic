@@ -41,14 +41,14 @@ defmodule Linklab.DomainLogic.Test.FilterBoolean do
       results =
         unquote(table)
         |> unquote(domain).filter_by(op)
-        |> Linklab.DomainLogic.Test.Repo.all()
+        |> unquote(domain).repo().all()
         |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
 
       assert results == [true]
 
-      Linklab.DomainLogic.Test.Repo.delete(r1)
-      Linklab.DomainLogic.Test.Repo.delete(r2)
-      Linklab.DomainLogic.Test.Repo.delete(r3)
+      unquote(domain).repo().delete(r1)
+      unquote(domain).repo().delete(r2)
+      unquote(domain).repo().delete(r3)
 
       ######################################
       # CONVERT TO BOOLEAN  : true
@@ -62,14 +62,14 @@ defmodule Linklab.DomainLogic.Test.FilterBoolean do
       results =
         unquote(table)
         |> unquote(domain).filter_by(op)
-        |> Linklab.DomainLogic.Test.Repo.all()
+        |> unquote(domain).repo().all()
         |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
 
       assert results == [true]
 
-      Linklab.DomainLogic.Test.Repo.delete(r1)
-      Linklab.DomainLogic.Test.Repo.delete(r2)
-      Linklab.DomainLogic.Test.Repo.delete(r3)
+      unquote(domain).repo().delete(r1)
+      unquote(domain).repo().delete(r2)
+      unquote(domain).repo().delete(r3)
 
       ######################################
       # CONVERT TO BOOLEAN  : 1
@@ -83,14 +83,14 @@ defmodule Linklab.DomainLogic.Test.FilterBoolean do
       results =
         unquote(table)
         |> unquote(domain).filter_by(op)
-        |> Linklab.DomainLogic.Test.Repo.all()
+        |> unquote(domain).repo().all()
         |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
 
       assert results == [true]
 
-      Linklab.DomainLogic.Test.Repo.delete(r1)
-      Linklab.DomainLogic.Test.Repo.delete(r2)
-      Linklab.DomainLogic.Test.Repo.delete(r3)
+      unquote(domain).repo().delete(r1)
+      unquote(domain).repo().delete(r2)
+      unquote(domain).repo().delete(r3)
 
       ######################################
       # CONVERT TO BOOLEAN  : no
@@ -104,14 +104,14 @@ defmodule Linklab.DomainLogic.Test.FilterBoolean do
       results =
         unquote(table)
         |> unquote(domain).filter_by(op)
-        |> Linklab.DomainLogic.Test.Repo.all()
+        |> unquote(domain).repo().all()
         |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
 
       assert results == [false]
 
-      Linklab.DomainLogic.Test.Repo.delete(r1)
-      Linklab.DomainLogic.Test.Repo.delete(r2)
-      Linklab.DomainLogic.Test.Repo.delete(r3)
+      unquote(domain).repo().delete(r1)
+      unquote(domain).repo().delete(r2)
+      unquote(domain).repo().delete(r3)
 
       ######################################
       # CONVERT TO BOOLEAN  : false
@@ -125,14 +125,14 @@ defmodule Linklab.DomainLogic.Test.FilterBoolean do
       results =
         unquote(table)
         |> unquote(domain).filter_by(op)
-        |> Linklab.DomainLogic.Test.Repo.all()
+        |> unquote(domain).repo().all()
         |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
 
       assert results == [false]
 
-      Linklab.DomainLogic.Test.Repo.delete(r1)
-      Linklab.DomainLogic.Test.Repo.delete(r2)
-      Linklab.DomainLogic.Test.Repo.delete(r3)
+      unquote(domain).repo().delete(r1)
+      unquote(domain).repo().delete(r2)
+      unquote(domain).repo().delete(r3)
 
       ######################################
       # CONVERT TO BOOLEAN  : 0
@@ -146,14 +146,14 @@ defmodule Linklab.DomainLogic.Test.FilterBoolean do
       results =
         unquote(table)
         |> unquote(domain).filter_by(op)
-        |> Linklab.DomainLogic.Test.Repo.all()
+        |> unquote(domain).repo().all()
         |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
 
       assert results == [false]
 
-      Linklab.DomainLogic.Test.Repo.delete(r1)
-      Linklab.DomainLogic.Test.Repo.delete(r2)
-      Linklab.DomainLogic.Test.Repo.delete(r3)
+      unquote(domain).repo().delete(r1)
+      unquote(domain).repo().delete(r2)
+      unquote(domain).repo().delete(r3)
 
       ######################################
       # EQ
@@ -167,14 +167,14 @@ defmodule Linklab.DomainLogic.Test.FilterBoolean do
       results =
         unquote(table)
         |> unquote(domain).filter_by(op)
-        |> Linklab.DomainLogic.Test.Repo.all()
+        |> unquote(domain).repo().all()
         |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
 
       assert results == [true]
 
-      Linklab.DomainLogic.Test.Repo.delete(r1)
-      Linklab.DomainLogic.Test.Repo.delete(r2)
-      Linklab.DomainLogic.Test.Repo.delete(r3)
+      unquote(domain).repo().delete(r1)
+      unquote(domain).repo().delete(r2)
+      unquote(domain).repo().delete(r3)
 
       ######################################
       # NE
@@ -188,14 +188,14 @@ defmodule Linklab.DomainLogic.Test.FilterBoolean do
       results =
         unquote(table)
         |> unquote(domain).filter_by(op)
-        |> Linklab.DomainLogic.Test.Repo.all()
+        |> unquote(domain).repo().all()
         |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
 
       assert results == [false, false]
 
-      Linklab.DomainLogic.Test.Repo.delete(r1)
-      Linklab.DomainLogic.Test.Repo.delete(r2)
-      Linklab.DomainLogic.Test.Repo.delete(r3)
+      unquote(domain).repo().delete(r1)
+      unquote(domain).repo().delete(r2)
+      unquote(domain).repo().delete(r3)
 
       ######################################
       # GT

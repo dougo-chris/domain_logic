@@ -4,9 +4,9 @@ defmodule Linklab.DomainLogic.Filter.FilterDateTest do
   alias Linklab.DomainLogic.Filter.FilterDate
 
   test "invalid operation" do
-    [:eq, :in]
+    [:lk, :in]
     |> Enum.each(fn operation ->
-      assert FilterDate.validate_value("2002:12:01", operation) == {:error, "Invalid date"}
+      assert FilterDate.validate_value("2002:12:01", operation) == {:error, "Invalid operation : #{operation}"}
     end)
   end
 

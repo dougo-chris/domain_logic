@@ -1,4 +1,4 @@
-defmodule Linklab.DomainLogic.Test.DataCase do
+defmodule Linklab.DomainLogic.DataCase do
   @moduledoc """
   This module defines the setup for tests requiring
   access to the application's data layer.
@@ -16,26 +16,27 @@ defmodule Linklab.DomainLogic.Test.DataCase do
 
   using do
     quote do
-      alias Linklab.DomainLogic.Test.Repo
+      alias Linklab.DomainLogic.Repo
 
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
 
-      import Linklab.DomainLogic.Test.Factory
+      import Linklab.DomainLogic.Factory
 
-      import Linklab.DomainLogic.Test.DataCase
+      import Linklab.DomainLogic.DataCase
       import Linklab.DomainLogic.Test.FilterInteger
       import Linklab.DomainLogic.Test.FilterString
       import Linklab.DomainLogic.Test.FilterBoolean
+      import Linklab.DomainLogic.Test.SortInteger
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Linklab.DomainLogic.Test.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Linklab.DomainLogic.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Linklab.DomainLogic.Test.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(Linklab.DomainLogic.Repo, {:shared, self()})
     end
 
     :ok

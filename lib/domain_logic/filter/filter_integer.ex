@@ -1,6 +1,10 @@
 defmodule Linklab.DomainLogic.Filter.FilterInteger do
   @moduledoc false
 
+  def validate_value(_value, op) when op in [:lk] do
+    {:error, "Invalid operation : #{op}"}
+  end
+
   def validate_value(value, :in) when is_integer(value) do
     {:ok, [value]}
   end

@@ -3,6 +3,13 @@ defmodule Linklab.DomainLogic.Filter.FilterDatetimeTest do
 
   alias Linklab.DomainLogic.Filter.FilterDatetime
 
+  test "invalid operation" do
+    [:lk, :in]
+    |> Enum.each(fn operation ->
+      assert FilterDatetime.validate_value("2002:12:01", operation) == {:error, "Invalid operation : #{operation}"}
+    end)
+  end
+
   describe "validate_value : string" do
     test "valid string" do
       expected = %{year: 2002, month: 12, day: 1, hour: 12, minute: 24, second: 01}

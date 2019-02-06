@@ -1,7 +1,7 @@
-defmodule Linklab.DomainLogic.Test.Db.ProductDomain do
+defmodule Linklab.DomainLogic.Db.ProductDomain do
   @moduledoc false
 
-  use Linklab.DomainLogic, repo: Linklab.DomainLogic.Test.Repo
+  use Linklab.DomainLogic, repo: Linklab.DomainLogic.Repo
 
   register_filter do
     filter(:id, :integer)

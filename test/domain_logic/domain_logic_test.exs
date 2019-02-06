@@ -1,8 +1,8 @@
-defmodule Linklab.DomainLogic.Test.ProductDomainTest do
-  use Linklab.DomainLogic.Test.DataCase
+defmodule Linklab.DomainLogic.DomainLogicTest do
+  use Linklab.DomainLogic.DataCase
 
-  alias Linklab.DomainLogic.Test.Db.ProductDomain
-  alias Linklab.DomainLogic.Test.Db.ProductTable
+  alias Linklab.DomainLogic.Db.ProductDomain
+  alias Linklab.DomainLogic.Db.ProductTable
 
   describe "find" do
     test "it should be valid" do
@@ -17,7 +17,7 @@ defmodule Linklab.DomainLogic.Test.ProductDomainTest do
     end
   end
 
-  describe "associations" do
+  describe "preload_with" do
     test "it should load the category" do
       category = insert(:category)
       product = insert(:product, category: category)

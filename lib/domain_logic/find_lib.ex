@@ -61,8 +61,7 @@ defmodule Linklab.DomainLogic.FindLib do
       @impl true
       @spec all(Ecto.Queryable.t()) :: [Ecto.Schema.t()]
       def all(query) do
-        query
-        |> unquote(repo).all()
+        unquote(repo).all(query)
       end
 
       @doc """
@@ -70,9 +69,8 @@ defmodule Linklab.DomainLogic.FindLib do
       """
       @impl true
       @spec paginate(Ecto.Queryable.t(), {non_neg_integer, non_neg_integer}) :: Scrivener.Page.t()
-      def paginate(query, pagination) do
-        query
-        |> unquote(repo).paginate(pagination)
+      def paginate(query, {page, page_size}) do
+        unquote(repo).paginate(query, page: page, page_size: page_size)
       end
 
       @doc """

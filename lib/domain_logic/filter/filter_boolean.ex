@@ -1,7 +1,11 @@
 defmodule Linklab.DomainLogic.Filter.FilterBoolean do
   @moduledoc false
 
-  def validate_value(value, op) when op in [:eq, :ne] do
+  def validate_value(_value, op) when op not in [:ne, :eq] do
+    {:error, "Invalid operation : #{op}"}
+  end
+
+  def validate_value(value, _op) do
     cond do
       is_boolean(value) -> {:ok, value}
       is_binary(value) && value == "true" -> {:ok, true}
@@ -12,9 +16,5 @@ defmodule Linklab.DomainLogic.Filter.FilterBoolean do
       is_integer(value) && value == 0 -> {:ok, false}
       true -> {:error, "Invalid boolean"}
     end
-  end
-
-  def validate_value(_value, _op) do
-    {:error, "Invalid boolean"}
   end
 end

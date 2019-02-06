@@ -1,12 +1,8 @@
 defmodule Linklab.DomainLogic.Filter.FilterDate do
   @moduledoc false
 
-  def validate_value(_value, :eq) do
-    {:error, "Invalid date"}
-  end
-
-  def validate_value(_value, :in) do
-    {:error, "Invalid date"}
+  def validate_value(_value, op) when op not in [:gt, :ge, :lt, :le, :ne, :eq] do
+    {:error, "Invalid operation : #{op}"}
   end
 
   def validate_value(value, op) when is_binary(value) do
@@ -58,6 +54,10 @@ defmodule Linklab.DomainLogic.Filter.FilterDate do
 
   def validate_value({year, month, day, _, _, _}, :le) do
     {:ok, %{year: year, month: month, day: day, hour: 23, minute: 59, second: 59}}
+  end
+
+  def validate_value({year, month, day, _, _, _}, _op) do
+    {:ok, %{year: year, month: month, day: day, hour: 0, minute: 0, second: 0}}
   end
 
   def validate_value(_value, _op) do

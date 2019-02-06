@@ -173,12 +173,20 @@ defmodule Linklab.DomainLogic.FilterLib do
     validate_field_op(String.to_atom(op), type)
   end
 
-  defp validate_field_op(:lk, :integer) do
-    {:error, "Invalid operation : lk"}
-  end
-
   defp validate_field_op(op, :boolean) when op not in [:ne, :eq] do
     {:error, "Invalid operation : #{op}"}
+  end
+
+  defp validate_field_op(op, :date) when op not in [:gt, :ge, :lt, :le, :ne, :eq] do
+    {:error, "Invalid operation : #{op}"}
+  end
+
+  defp validate_field_op(op, :datetime) when op not in [:gt, :ge, :lt, :le, :ne, :eq] do
+    {:error, "Invalid operation : #{op}"}
+  end
+
+  defp validate_field_op(:lk, :integer) do
+    {:error, "Invalid operation : lk"}
   end
 
   defp validate_field_op(op, _type) when op in [:gt, :ge, :lt, :le, :lk, :in, :ne, :eq] do

@@ -40,14 +40,14 @@ defmodule Linklab.DomainLogic.Test.FilterString do
       results =
         unquote(table)
         |> unquote(domain).filter_by(op)
-        |> Linklab.DomainLogic.Test.Repo.all()
+        |> unquote(domain).repo().all()
         |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
 
       assert results == ["2002"]
 
-      Linklab.DomainLogic.Test.Repo.delete(r1)
-      Linklab.DomainLogic.Test.Repo.delete(r2)
-      Linklab.DomainLogic.Test.Repo.delete(r3)
+      unquote(domain).repo().delete(r1)
+      unquote(domain).repo().delete(r2)
+      unquote(domain).repo().delete(r3)
 
       ######################################
       # EQ
@@ -61,14 +61,14 @@ defmodule Linklab.DomainLogic.Test.FilterString do
       results =
         unquote(table)
         |> unquote(domain).filter_by(op)
-        |> Linklab.DomainLogic.Test.Repo.all()
+        |> unquote(domain).repo().all()
         |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
 
       assert results == ["VALUE"]
 
-      Linklab.DomainLogic.Test.Repo.delete(r1)
-      Linklab.DomainLogic.Test.Repo.delete(r2)
-      Linklab.DomainLogic.Test.Repo.delete(r3)
+      unquote(domain).repo().delete(r1)
+      unquote(domain).repo().delete(r2)
+      unquote(domain).repo().delete(r3)
 
       ######################################
       # NE
@@ -82,14 +82,15 @@ defmodule Linklab.DomainLogic.Test.FilterString do
       results =
         unquote(table)
         |> unquote(domain).filter_by(op)
-        |> Linklab.DomainLogic.Test.Repo.all()
+        |> unquote(domain).repo().all()
         |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
+        |> Enum.sort_by(fn result -> result end)
 
       assert results == ["AVALUE", "VALUEZ"]
 
-      Linklab.DomainLogic.Test.Repo.delete(r1)
-      Linklab.DomainLogic.Test.Repo.delete(r2)
-      Linklab.DomainLogic.Test.Repo.delete(r3)
+      unquote(domain).repo().delete(r1)
+      unquote(domain).repo().delete(r2)
+      unquote(domain).repo().delete(r3)
 
       ######################################
       # GT
@@ -103,14 +104,14 @@ defmodule Linklab.DomainLogic.Test.FilterString do
       results =
         unquote(table)
         |> unquote(domain).filter_by(op)
-        |> Linklab.DomainLogic.Test.Repo.all()
+        |> unquote(domain).repo().all()
         |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
 
       assert results == ["VALUEZ"]
 
-      Linklab.DomainLogic.Test.Repo.delete(r1)
-      Linklab.DomainLogic.Test.Repo.delete(r2)
-      Linklab.DomainLogic.Test.Repo.delete(r3)
+      unquote(domain).repo().delete(r1)
+      unquote(domain).repo().delete(r2)
+      unquote(domain).repo().delete(r3)
 
       ######################################
       # GE
@@ -124,14 +125,14 @@ defmodule Linklab.DomainLogic.Test.FilterString do
       results =
         unquote(table)
         |> unquote(domain).filter_by(op)
-        |> Linklab.DomainLogic.Test.Repo.all()
+        |> unquote(domain).repo().all()
         |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
 
       assert Enum.sort(results) == ["VALUE", "VALUEZ"]
 
-      Linklab.DomainLogic.Test.Repo.delete(r1)
-      Linklab.DomainLogic.Test.Repo.delete(r2)
-      Linklab.DomainLogic.Test.Repo.delete(r3)
+      unquote(domain).repo().delete(r1)
+      unquote(domain).repo().delete(r2)
+      unquote(domain).repo().delete(r3)
 
       ######################################
       # LT
@@ -145,14 +146,14 @@ defmodule Linklab.DomainLogic.Test.FilterString do
       results =
         unquote(table)
         |> unquote(domain).filter_by(op)
-        |> Linklab.DomainLogic.Test.Repo.all()
+        |> unquote(domain).repo().all()
         |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
 
       assert results == ["AVALUE"]
 
-      Linklab.DomainLogic.Test.Repo.delete(r1)
-      Linklab.DomainLogic.Test.Repo.delete(r2)
-      Linklab.DomainLogic.Test.Repo.delete(r3)
+      unquote(domain).repo().delete(r1)
+      unquote(domain).repo().delete(r2)
+      unquote(domain).repo().delete(r3)
 
       ######################################
       # LE
@@ -166,14 +167,14 @@ defmodule Linklab.DomainLogic.Test.FilterString do
       results =
         unquote(table)
         |> unquote(domain).filter_by(op)
-        |> Linklab.DomainLogic.Test.Repo.all()
+        |> unquote(domain).repo().all()
         |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
 
       assert Enum.sort(results) == ["AVALUE", "VALUE"]
 
-      Linklab.DomainLogic.Test.Repo.delete(r1)
-      Linklab.DomainLogic.Test.Repo.delete(r2)
-      Linklab.DomainLogic.Test.Repo.delete(r3)
+      unquote(domain).repo().delete(r1)
+      unquote(domain).repo().delete(r2)
+      unquote(domain).repo().delete(r3)
 
       ######################################
       # LIKE
@@ -189,16 +190,16 @@ defmodule Linklab.DomainLogic.Test.FilterString do
       results =
         unquote(table)
         |> unquote(domain).filter_by(op)
-        |> Linklab.DomainLogic.Test.Repo.all()
+        |> unquote(domain).repo().all()
         |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
 
       assert Enum.sort(results) == ["AVALUE", "VALUE", "VALUEZ"]
 
-      Linklab.DomainLogic.Test.Repo.delete(r1)
-      Linklab.DomainLogic.Test.Repo.delete(r2)
-      Linklab.DomainLogic.Test.Repo.delete(r3)
-      Linklab.DomainLogic.Test.Repo.delete(r4)
-      Linklab.DomainLogic.Test.Repo.delete(r5)
+      unquote(domain).repo().delete(r1)
+      unquote(domain).repo().delete(r2)
+      unquote(domain).repo().delete(r3)
+      unquote(domain).repo().delete(r4)
+      unquote(domain).repo().delete(r5)
 
       ######################################
       # IN
@@ -211,13 +212,13 @@ defmodule Linklab.DomainLogic.Test.FilterString do
       results =
         unquote(table)
         |> unquote(domain).filter_by(op)
-        |> Linklab.DomainLogic.Test.Repo.all()
+        |> unquote(domain).repo().all()
         |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
 
       assert Enum.sort(results) == ["FIND ME"]
 
-      Linklab.DomainLogic.Test.Repo.delete(r1)
-      Linklab.DomainLogic.Test.Repo.delete(r2)
+      unquote(domain).repo().delete(r1)
+      unquote(domain).repo().delete(r2)
     end
   end
 end
