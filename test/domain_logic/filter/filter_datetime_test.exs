@@ -10,6 +10,10 @@ defmodule Linklab.DomainLogic.Filter.FilterDatetimeTest do
     end)
   end
 
+  test "nil value" do
+    assert FilterDatetime.validate_value(nil, :gt) == {:ok, nil}
+  end
+
   describe "validate_value : string" do
     test "valid string" do
       expected = %{year: 2002, month: 12, day: 1, hour: 12, minute: 24, second: 01}

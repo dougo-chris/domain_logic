@@ -11,6 +11,7 @@ defmodule Linklab.DomainLogic.Db.ProductDomain do
   end
 
   register_sort do
+    sort(:id)
     sort(:name)
     sort(:price)
   end

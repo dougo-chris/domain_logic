@@ -3,15 +3,26 @@ defmodule Linklab.DomainLogic.Filter.FilterBooleanTest do
 
   alias Linklab.DomainLogic.Filter.FilterBoolean
 
+  test "invalid operation" do
+    [:gt, :ge, :lt, :le, :lk, :in]
+    |> Enum.each(fn operation ->
+      assert FilterBoolean.validate_value(true, operation) == {:error, "Invalid operation : #{operation}"}
+    end)
+  end
+
+  test "nil value" do
+    assert FilterBoolean.validate_value(nil, :eq) == {:ok, nil}
+  end
+
   describe "validate_value" do
-    test "valid true value and operation" do
+    test "valid true value" do
       ["true", "yes", 1, true]
       |> Enum.each(fn value ->
         assert FilterBoolean.validate_value(value, :eq) == {:ok, true}
       end)
     end
 
-    test "valid false value and operation" do
+    test "valid false value" do
       ["false", "no", 0, false]
       |> Enum.each(fn value ->
         assert FilterBoolean.validate_value(value, :eq) == {:ok, false}
@@ -20,13 +31,6 @@ defmodule Linklab.DomainLogic.Filter.FilterBooleanTest do
 
     test "invalid value" do
       assert FilterBoolean.validate_value("ERROR", :eq) == {:error, "Invalid boolean"}
-    end
-
-    test "invalid operation" do
-      [:gt, :ge, :lt, :le, :lk, :in]
-      |> Enum.each(fn operation ->
-        assert FilterBoolean.validate_value(true, operation) == {:error, "Invalid operation : #{operation}"}
-      end)
     end
   end
 end

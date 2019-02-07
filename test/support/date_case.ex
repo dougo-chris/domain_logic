@@ -29,6 +29,7 @@ defmodule Linklab.DomainLogic.DataCase do
       import Linklab.DomainLogic.Test.FilterString
       import Linklab.DomainLogic.Test.FilterBoolean
       import Linklab.DomainLogic.Test.SortInteger
+      import Linklab.DomainLogic.Test.SortString
     end
   end
 

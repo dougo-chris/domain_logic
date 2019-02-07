@@ -5,6 +5,8 @@ defmodule Linklab.DomainLogic.Filter.FilterDatetime do
     {:error, "Invalid operation : #{op}"}
   end
 
+  def validate_value(nil, _op), do: {:ok, nil}
+
   def validate_value(value, op) when is_binary(value) do
     with [date, time] <- String.split(value, " "),
         [ys, ms, ds] <- String.split(date, ":"),

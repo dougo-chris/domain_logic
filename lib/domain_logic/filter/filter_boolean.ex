@@ -5,6 +5,8 @@ defmodule Linklab.DomainLogic.Filter.FilterBoolean do
     {:error, "Invalid operation : #{op}"}
   end
 
+  def validate_value(nil, _op), do: {:ok, nil}
+
   def validate_value(value, _op) do
     cond do
       is_boolean(value) -> {:ok, value}

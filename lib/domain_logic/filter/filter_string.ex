@@ -1,27 +1,35 @@
 defmodule Linklab.DomainLogic.Filter.FilterString do
   @moduledoc false
 
+  def validate_value(nil, :in), do: {:ok, [nil]}
+  def validate_value(nil, _op), do: {:ok, nil}
+
   def validate_value(value, :in) when is_binary(value) do
     {:ok, [value]}
   end
 
   def validate_value(value, :in) when is_integer(value) do
-    {:ok, Integer.to_string(value)}
+    {:ok, [Integer.to_string(value)]}
   end
 
   def validate_value(value, :in) when is_list(value) do
     values =
       value
       |> Enum.map(fn
-        value when is_binary(value) -> value
-        value when is_integer(value) -> Integer.to_string(value)
-        _ -> nil
+        value when value == nil ->
+          {:ok, nil}
+        value when is_binary(value) ->
+          {:ok, value}
+        value when is_integer(value) ->
+          {:ok, Integer.to_string(value)}
+        _ ->
+          {:error, "Invalid string"}
       end)
 
-    if Enum.find(values, &is_nil/1) do
+    if Enum.find(values, fn {result, _} -> result == :error end) do
       {:error, "Invalid string"}
     else
-      {:ok, values}
+      {:ok, Enum.map(values, fn {_, value} -> value end)}
     end
   end
 
