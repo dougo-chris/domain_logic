@@ -1,21 +1,22 @@
 # Linklab.DomainLogic
 
 # DEVELOPMENT
-```./bin/linklab clean```     To clean runtime dependencies
+```./bin/domain_logic clean```     To clean runtime dependencies
 
-```./bin/linklab build```     To install the dependencies
+```./bin/domain_logic build```     To install the dependencies
 
-```./bin/linklab iex```       To run the elixir command line
+```./bin/domain_logic upgrade```   To upgrade the dependencies
+
+```./bin/domain_logic iex```       To run the elixir command line
+
+```./bin/domain_logic mix```       To run a mix task
 
 # TESTING
-```./bin/linklab test```            Run the tests
 
-```./bin/linklab test dialyzer```   Execute dialyzer
+```./bin/domain_logic test```            Run the tests
 
-```./bin/linklab test all```        Run all the tests
+```./bin/domain_logic test dialyzer```   Execute dialyzer
 
-```./bin/linklab test watch```      Continuously run the tests
+```./bin/domain_logic test watch```      Continuously run the tests
 
-# OTHER
-```./bin/linklab docs```         To generate the documentation
-
+```./bin/domain_logic test dev```        Continuously run the dev tests
