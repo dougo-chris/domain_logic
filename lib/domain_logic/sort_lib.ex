@@ -8,9 +8,9 @@ defmodule Linklab.DomainLogic.SortLib do
   @type sort_field :: {atom, true}
   @type sort :: {atom | String.t(), :asc | :desc | String.t()}
 
-  @callback sort_fields() :: list(sort_field)
-  @callback sort_by(Ecto.Schema.t(), sort | list(sort)) :: Ecto.Queryable.t()
-  @callback sort_validate(sort | list(sort)) :: list(sort)
+  @callback sort_fields() :: list(sort_field())
+  @callback sort_by(Ecto.Schema.t(), sort() | list(sort())) :: Ecto.Queryable.t()
+  @callback sort_validate(sort | list(sort())) :: list(sort())
 
   defmacro __using__(_opts) do
     quote do
@@ -24,7 +24,7 @@ defmodule Linklab.DomainLogic.SortLib do
       defoverridable sort_fields: 0
 
       @impl true
-      @spec sort_by(Ecto.Queryable.t(), SortLib.sort | list(SortLib.sort)) :: Ecto.Queryable.t()
+      @spec sort_by(Ecto.Queryable.t(), SortLib.sort() | list(SortLib.sort())) :: Ecto.Queryable.t()
       def sort_by(query, sorts) when is_list(sorts) do
         fields = sort_fields()
         Linklab.DomainLogic.SortLib.__sort_builder__(query, sorts, fields)
@@ -33,7 +33,7 @@ defmodule Linklab.DomainLogic.SortLib do
       def sort_by(query, sort), do: sort_by(query, [sort])
 
       @impl true
-      @spec sort_validate(SortLib.sort | list(SortLib.sort)) :: list(SortLib.sort)
+      @spec sort_validate(SortLib.sort() | list(SortLib.sort())) :: list(SortLib.sort)
       def sort_validate(sorts) when is_list(sorts) do
         fields = sort_fields()
         []

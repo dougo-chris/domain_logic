@@ -3,7 +3,11 @@ defmodule Linklab.DomainLogic.LimitLib do
 
   import Ecto.Query
 
-  @callback limit_by(Ecto.Schema.t(), any()) :: Ecto.Queryable.t()
+  alias Linklab.DomainLogic.LimitLib
+
+  @type limit :: integer | {integer, integer}
+
+  @callback limit_by(Ecto.Queryable.t(), limit() | list(limit())) :: Ecto.Queryable.t()
 
   defmacro __using__(_opts) do
     quote do
@@ -11,10 +15,8 @@ defmodule Linklab.DomainLogic.LimitLib do
 
       @behaviour Linklab.DomainLogic.LimitLib
 
-      @type limit :: integer | {integer, integer}
-
       @impl true
-      @spec limit_by(Ecto.Queryable.t(), limit) :: Ecto.Queryable.t()
+      @callback limit_by(Ecto.Queryable.t(), LimitLib.limit() | list(LimitLib.limit())) :: Ecto.Queryable.t()
       def limit_by(query, limit) do
         Linklab.DomainLogic.LimitLib.__limit_builder__(query, limit)
       end
