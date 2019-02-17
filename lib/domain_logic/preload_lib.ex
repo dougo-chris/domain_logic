@@ -3,6 +3,8 @@ defmodule Linklab.DomainLogic.PreloadLib do
 
   import Ecto.Query
 
+  alias Linklab.DomainLogic.PreloadLib
+
   @type preload :: atom() | list(atom()) | keyword()
 
   @callback preload_with(Ecto.Schema.t(), preload()) :: Ecto.Queryable.t()
