@@ -20,7 +20,7 @@ defmodule Linklab.DomainLogic.SortLib do
 
       @impl true
       @spec sort_fields() :: list(SortLib.sort_field)
-      def sort_fields, do: %{}
+      def sort_fields, do: []
       defoverridable sort_fields: 0
 
       @impl true
