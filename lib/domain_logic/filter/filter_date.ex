@@ -9,9 +9,9 @@ defmodule Linklab.DomainLogic.Filter.FilterDate do
 
   def validate_value(value, op) when is_binary(value) do
     with [ys, ms, ds] <- String.split(value, ":"),
-        {year, _} <- Integer.parse(ys),
-        {month, _} <- Integer.parse(ms),
-        {day, _} <- Integer.parse(ds) do
+         {year, _} <- Integer.parse(ys),
+         {month, _} <- Integer.parse(ms),
+         {day, _} <- Integer.parse(ds) do
       validate_value({year, month, day, 0, 0, 0}, op)
     else
       _ ->

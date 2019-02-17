@@ -36,12 +36,12 @@ defmodule Linklab.DomainLogic.FilterLib do
       @behaviour Linklab.DomainLogic.FilterLib
 
       @impl true
-      @spec filter_fields() :: list(FilterLib.filter_field)
+      @spec filter_fields() :: list(FilterLib.filter_field())
       def filter_fields, do: []
       defoverridable filter_fields: 0
 
       @impl true
-      @spec filter_by(Ecto.Queryable.t(), FilterLib.filter | list(FilterLib.filter)) :: Ecto.Queryable.t()
+      @spec filter_by(Ecto.Queryable.t(), FilterLib.filter() | list(FilterLib.filter())) :: Ecto.Queryable.t()
       def filter_by(query, filters) when is_list(filters) do
         fields = filter_fields()
         Linklab.DomainLogic.FilterLib.__filter_builder__(query, filters, fields)
@@ -50,9 +50,10 @@ defmodule Linklab.DomainLogic.FilterLib do
       def filter_by(query, filter), do: filter_by(query, [filter])
 
       @impl true
-      @spec filter_validate(FilterLib.filter | list(FilterLib.filter)) :: list(FilterLib.filter)
+      @spec filter_validate(FilterLib.filter() | list(FilterLib.filter())) :: list(FilterLib.filter())
       def filter_validate(filters) when is_list(filters) do
         fields = filter_fields()
+
         []
         |> Linklab.DomainLogic.FilterLib.__filter_validator__(filters, fields)
         |> Enum.reverse()
@@ -82,7 +83,7 @@ defmodule Linklab.DomainLogic.FilterLib do
   @doc """
   Define the filter_by field
   """
-  @spec filter(atom, FilterLib.filter_type) :: any()
+  @spec filter(atom, FilterLib.filter_type()) :: any()
   defmacro filter(name, type) do
     quote do
       Module.put_attribute(__MODULE__, :filter_fields, {unquote(name), unquote(type)})
@@ -155,6 +156,7 @@ defmodule Linklab.DomainLogic.FilterLib do
     case Keyword.get(fields, name) do
       nil ->
         {:error, "Invalid field : #{name}"}
+
       _ ->
         {:ok, name}
     end
@@ -164,6 +166,7 @@ defmodule Linklab.DomainLogic.FilterLib do
     case Enum.find(fields, fn {field, _} -> "#{field}" == name end) do
       nil ->
         {:error, "Invalid field : #{name}"}
+
       {name, _} ->
         {:ok, name}
     end

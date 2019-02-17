@@ -28,11 +28,11 @@ defmodule Linklab.DomainLogic.Filter.FilterDatetimeTest do
   describe "validate_value : timestamp" do
     test "valid unix timestamp" do
       expected = %{year: 2017, month: 2, day: 2, hour: 11, minute: 42, second: 46}
-      assert FilterDatetime.validate_value(1486035766, :gt) == {:ok, expected}
+      assert FilterDatetime.validate_value(1_486_035_766, :gt) == {:ok, expected}
     end
 
     test "invalid unix timestamp" do
-      assert FilterDatetime.validate_value(999999999999, :gt) == {:error, "Invalid date"}
+      assert FilterDatetime.validate_value(999_999_999_999, :gt) == {:error, "Invalid date"}
     end
   end
 
@@ -65,9 +65,10 @@ defmodule Linklab.DomainLogic.Filter.FilterDatetimeTest do
   describe "validate_value : Date" do
     test "valid date" do
       date =
-        1486035311
+        1_486_035_311
         |> DateTime.from_unix!()
         |> DateTime.to_date()
+
       expected = %{year: 2017, month: 2, day: 2, hour: 0, minute: 0, second: 0}
       assert FilterDatetime.validate_value(date, :gt) == {:ok, expected}
     end
@@ -75,7 +76,7 @@ defmodule Linklab.DomainLogic.Filter.FilterDatetimeTest do
 
   describe "validate_value : DateTime" do
     test "valid datetime" do
-      date_time = DateTime.from_unix!(1486035311)
+      date_time = DateTime.from_unix!(1_486_035_311)
       expected = %{year: 2017, month: 2, day: 2, hour: 11, minute: 35, second: 11}
       assert FilterDatetime.validate_value(date_time, :gt) == {:ok, expected}
     end
@@ -84,9 +85,10 @@ defmodule Linklab.DomainLogic.Filter.FilterDatetimeTest do
   describe "validate_value : NaiveDateTime" do
     test "valid datetime" do
       ndt =
-        1486035311
+        1_486_035_311
         |> DateTime.from_unix!()
         |> DateTime.to_naive()
+
       expected = %{year: 2017, month: 2, day: 2, hour: 11, minute: 35, second: 11}
       assert FilterDatetime.validate_value(ndt, :gt) == {:ok, expected}
     end

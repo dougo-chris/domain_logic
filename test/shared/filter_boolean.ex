@@ -1,5 +1,4 @@
 defmodule Linklab.DomainLogic.Test.FilterBoolean do
-
   defmacro test_filter_by_boolean(domain, table, model, field) do
     quote do
       test_filter_by_boolean(unquote(domain), unquote(table), unquote(model), unquote(field), %{})

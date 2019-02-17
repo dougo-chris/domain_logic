@@ -32,6 +32,7 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
     test "it should raise an error if mutiple results" do
       insert(:product)
       insert(:product)
+
       assert_raise Ecto.MultipleResultsError, fn ->
         ProductDomain.one(ProductTable)
       end
@@ -64,6 +65,7 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
       first = insert(:product)
       next = insert(:product)
       _last = insert(:product)
+
       result =
         ProductTable
         |> ProductDomain.sort_by({:id, :asc})
@@ -85,6 +87,7 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
       _first = insert(:product)
       next = insert(:product)
       _last = insert(:product)
+
       result =
         ProductTable
         |> ProductDomain.sort_by({:id, :asc})
@@ -106,6 +109,7 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
       first = insert(:product)
       _next = insert(:product)
       _last = insert(:product)
+
       result =
         ProductTable
         |> ProductDomain.sort_by({:id, :asc})
@@ -127,6 +131,7 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
       _first = insert(:product)
       _next = insert(:product)
       last = insert(:product)
+
       result =
         ProductTable
         |> ProductDomain.sort_by({:id, :asc})
@@ -198,6 +203,7 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
     test "it should load the category" do
       category = insert(:category)
       product = insert(:product, category: category)
+
       {:ok, record} =
         ProductTable
         |> ProductDomain.preload_with(:category)
@@ -210,6 +216,7 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
       product = insert(:product)
       first = insert(:variant, product: product)
       last = insert(:variant, product: product)
+
       {:ok, record} =
         ProductTable
         |> ProductDomain.preload_with(:variants)

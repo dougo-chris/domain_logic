@@ -9,14 +9,14 @@ defmodule Linklab.DomainLogic.Filter.FilterDatetime do
 
   def validate_value(value, op) when is_binary(value) do
     with [date, time] <- String.split(value, " "),
-        [ys, ms, ds] <- String.split(date, ":"),
-        [hs, mms, ss] <- String.split(time, ":"),
-        {year, _} <- Integer.parse(ys),
-        {month, _} <- Integer.parse(ms),
-        {day, _} <- Integer.parse(ds),
-        {hour, _} <- Integer.parse(hs),
-        {minute, _} <- Integer.parse(mms),
-        {second, _} <- Integer.parse(ss) do
+         [ys, ms, ds] <- String.split(date, ":"),
+         [hs, mms, ss] <- String.split(time, ":"),
+         {year, _} <- Integer.parse(ys),
+         {month, _} <- Integer.parse(ms),
+         {day, _} <- Integer.parse(ds),
+         {hour, _} <- Integer.parse(hs),
+         {minute, _} <- Integer.parse(mms),
+         {second, _} <- Integer.parse(ss) do
       validate_value({year, month, day, hour, minute, second}, op)
     else
       _ ->

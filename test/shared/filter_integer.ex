@@ -1,5 +1,4 @@
 defmodule Linklab.DomainLogic.Test.FilterInteger do
-
   defmacro test_filter_by_integer(domain, table, model, field) do
     quote do
       test_filter_by_integer(unquote(domain), unquote(table), unquote(model), unquote(field), %{})

@@ -19,7 +19,7 @@ defmodule Linklab.DomainLogic.SortLib do
       @behaviour Linklab.DomainLogic.SortLib
 
       @impl true
-      @spec sort_fields() :: list(SortLib.sort_field)
+      @spec sort_fields() :: list(SortLib.sort_field())
       def sort_fields, do: []
       defoverridable sort_fields: 0
 
@@ -33,9 +33,10 @@ defmodule Linklab.DomainLogic.SortLib do
       def sort_by(query, sort), do: sort_by(query, [sort])
 
       @impl true
-      @spec sort_validate(SortLib.sort() | list(SortLib.sort())) :: list(SortLib.sort)
+      @spec sort_validate(SortLib.sort() | list(SortLib.sort())) :: list(SortLib.sort())
       def sort_validate(sorts) when is_list(sorts) do
         fields = sort_fields()
+
         []
         |> Linklab.DomainLogic.SortLib.__sort_validator__(sorts, fields)
         |> Enum.reverse()
@@ -101,6 +102,7 @@ defmodule Linklab.DomainLogic.SortLib do
     case Keyword.get(fields, name) do
       nil ->
         {:error, "Invalid field : #{name}"}
+
       _ ->
         {:ok, name}
     end
@@ -110,6 +112,7 @@ defmodule Linklab.DomainLogic.SortLib do
     case Enum.find(fields, fn {field, _} -> "#{field}" == name end) do
       nil ->
         {:error, "Invalid field : #{name}"}
+
       {name, _} ->
         {:ok, name}
     end

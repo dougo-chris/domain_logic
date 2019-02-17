@@ -2,8 +2,9 @@ defmodule Linklab.DomainLogic.FindLib do
   @moduledoc false
 
   @callback repo() :: Ecto.Repo.t()
-  @callback find(Ecto.Queryable.t(), {atom(), any()} | list({atom(), any()})) :: {:ok, Ecto.Schema.t()} | {:error, String.t}
-  @callback one(Ecto.Queryable.t()) :: {:ok, Ecto.Schema.t()} | {:error, String.t}
+  @callback find(Ecto.Queryable.t(), {atom(), any()} | list({atom(), any()})) ::
+              {:ok, Ecto.Schema.t()} | {:error, String.t()}
+  @callback one(Ecto.Queryable.t()) :: {:ok, Ecto.Schema.t()} | {:error, String.t()}
   @callback all(Ecto.Queryable.t()) :: [Ecto.Schema.t()]
   @callback paginate(Ecto.Queryable.t(), {non_neg_integer, non_neg_integer}) :: Scrivener.Page.t()
   @callback count(Ecto.Queryable.t()) :: integer
@@ -27,7 +28,8 @@ defmodule Linklab.DomainLogic.FindLib do
       Fetch a Records by the field == value
       """
       @impl true
-      @spec find(Ecto.Queryable.t(), {atom(), any()} | list({atom(), any()})) :: {:ok, Ecto.Schema.t()} | {:error, String.t}
+      @spec find(Ecto.Queryable.t(), {atom(), any()} | list({atom(), any()})) ::
+              {:ok, Ecto.Schema.t()} | {:error, String.t()}
       def find(query, params) when is_list(params) do
         case unquote(repo).get_by(query, params) do
           nil ->
@@ -44,7 +46,7 @@ defmodule Linklab.DomainLogic.FindLib do
       Fetch one Record by the query
       """
       @impl true
-      @spec one(Ecto.Queryable.t()) :: {:ok, Ecto.Schema.t()} | {:error, String.t}
+      @spec one(Ecto.Queryable.t()) :: {:ok, Ecto.Schema.t()} | {:error, String.t()}
       def one(query) do
         case unquote(repo).one(query) do
           nil ->

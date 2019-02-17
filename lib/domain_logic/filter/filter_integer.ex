@@ -28,8 +28,10 @@ defmodule Linklab.DomainLogic.Filter.FilterInteger do
       |> Enum.map(fn
         value when value == nil ->
           {:ok, nil}
+
         value when is_integer(value) ->
           {:ok, value}
+
         value when is_binary(value) ->
           case Integer.parse(value) do
             :error ->

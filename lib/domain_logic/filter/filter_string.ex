@@ -18,10 +18,13 @@ defmodule Linklab.DomainLogic.Filter.FilterString do
       |> Enum.map(fn
         value when value == nil ->
           {:ok, nil}
+
         value when is_binary(value) ->
           {:ok, value}
+
         value when is_integer(value) ->
           {:ok, Integer.to_string(value)}
+
         _ ->
           {:error, "Invalid string"}
       end)

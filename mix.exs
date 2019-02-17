@@ -11,10 +11,8 @@ defmodule Linklab.DomainLogic.Mixfile do
       elixir: @elixir_version,
       elixirc_paths: elixirc_paths(Mix.env()),
       deps: deps(),
-
       description: description(),
       package: package(),
-
       aliases: aliases(),
       dialyzer: dialyzer()
     ]

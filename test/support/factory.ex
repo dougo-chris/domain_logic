@@ -12,18 +12,19 @@ defmodule Linklab.DomainLogic.Factory do
 
   def product_factory do
     name = sequence(:name, &"Use ExMachina! (Part #{&1})")
+
     %Linklab.DomainLogic.Db.ProductTable{
       name: name,
       price: 100,
       available: false,
-      category: build(:category),
+      category: build(:category)
     }
   end
 
   def variant_factory do
     %Linklab.DomainLogic.Db.VariantTable{
       code: "VAR_1",
-      product: build(:product),
+      product: build(:product)
     }
   end
 end

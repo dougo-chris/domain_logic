@@ -1,5 +1,4 @@
 defmodule Linklab.DomainLogic.Test.FilterString do
-
   defmacro test_filter_by_string(domain, table, model, field) do
     quote do
       test_filter_by_string(unquote(domain), unquote(table), unquote(model), unquote(field), %{})
@@ -19,6 +18,7 @@ defmodule Linklab.DomainLogic.Test.FilterString do
 
         unquote(domain).filter_by(unquote(table), op)
       end
+
       ######################################
       # NOT A STRING
       ######################################
