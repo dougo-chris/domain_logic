@@ -8,9 +8,9 @@ defmodule Linklab.DomainLogic.SortLib do
   @type sort_field :: {atom, true}
   @type sort :: {atom | String.t(), :asc | :desc | String.t()}
 
-  @callback sort_fields() :: list(sort_field())
-  @callback sort_by(Ecto.Schema.t(), sort() | list(sort())) :: Ecto.Queryable.t()
-  @callback sort_validate(sort | list(sort())) :: list(sort())
+  @callback sort_fields() :: list(sort_field)
+  @callback sort_by(Ecto.Schema.t(), sort | list(sort)) :: Ecto.Queryable.t()
+  @callback sort_validate(sort | list(sort)) :: list(sort)
 
   defmacro __using__(_opts) do
     quote do

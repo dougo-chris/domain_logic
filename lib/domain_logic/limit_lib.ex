@@ -7,7 +7,7 @@ defmodule Linklab.DomainLogic.LimitLib do
 
   @type limit :: integer | {integer, integer}
 
-  @callback limit_by(Ecto.Queryable.t(), limit()) :: Ecto.Queryable.t()
+  @callback limit_by(Ecto.Queryable.t(), limit) :: Ecto.Queryable.t()
 
   defmacro __using__(_opts) do
     quote do
