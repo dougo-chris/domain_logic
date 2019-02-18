@@ -10,19 +10,18 @@ defmodule Linklab.DomainLogic.FindLib do
   @callback count(Ecto.Queryable.t()) :: integer
 
   defmacro __using__(opts) do
-    repo = opts[:repo]
 
     quote do
       @behaviour Linklab.DomainLogic.FindLib
+
+      @repo unquote(opts[:repo])
 
       @doc """
       Repo used by the domain
       """
       @impl true
       @spec repo() :: Ecto.Repo.t()
-      def repo() do
-        unquote(repo)
-      end
+      def repo(), do: @repo
 
       @doc """
       Fetch a Records by the field == value
@@ -31,7 +30,7 @@ defmodule Linklab.DomainLogic.FindLib do
       @spec find(Ecto.Queryable.t(), {atom(), any()} | list({atom(), any()})) ::
               {:ok, Ecto.Schema.t()} | {:error, String.t()}
       def find(query, params) when is_list(params) do
-        case unquote(repo).get_by(query, params) do
+        case @repo.get_by(query, params) do
           nil ->
             {:error, "Not found"}
 
@@ -43,12 +42,12 @@ defmodule Linklab.DomainLogic.FindLib do
       def find(query, params), do: find(query, [params])
 
       @doc """
-      Fetch one Record by the query
+      Fetch first Record by the query
       """
       @impl true
       @spec one(Ecto.Queryable.t()) :: {:ok, Ecto.Schema.t()} | {:error, String.t()}
       def one(query) do
-        case unquote(repo).one(query) do
+        case @repo.one(query) do
           nil ->
             {:error, "Not found"}
 
@@ -63,7 +62,7 @@ defmodule Linklab.DomainLogic.FindLib do
       @impl true
       @spec all(Ecto.Queryable.t()) :: [Ecto.Schema.t()]
       def all(query) do
-        unquote(repo).all(query)
+        @repo.all(query)
       end
 
       @doc """
@@ -72,7 +71,7 @@ defmodule Linklab.DomainLogic.FindLib do
       @impl true
       @spec paginate(Ecto.Queryable.t(), {non_neg_integer, non_neg_integer}) :: Scrivener.Page.t()
       def paginate(query, {page, page_size}) do
-        unquote(repo).paginate(query, page: page, page_size: page_size)
+        @repo.paginate(query, page: page, page_size: page_size)
       end
 
       @doc """
@@ -81,7 +80,7 @@ defmodule Linklab.DomainLogic.FindLib do
       @impl true
       @spec count(Ecto.Queryable.t()) :: integer
       def count(query) do
-        unquote(repo).aggregate(query, :count, :id)
+        @repo.aggregate(query, :count, :id)
       end
     end
   end
