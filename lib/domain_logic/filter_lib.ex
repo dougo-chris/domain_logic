@@ -27,7 +27,8 @@ defmodule Linklab.DomainLogic.FilterLib do
 
   @callback filter_fields() :: list(filter_field)
   @callback filter_by(Ecto.Schema.t(), filter | list(filter)) :: Ecto.Queryable.t()
-  @callback filter_validate(filter | list(filter)) :: list(filter)
+  @callback filter_clean(filter | list(filter)) :: list(filter)
+  @callback filter_validate(filter | list(filter)) :: list(filter) | {:error, String.t}
 
   defmacro __using__(_opts) do
     quote do
@@ -50,16 +51,31 @@ defmodule Linklab.DomainLogic.FilterLib do
       def filter_by(query, filter), do: filter_by(query, [filter])
 
       @impl true
-      @spec filter_validate(FilterLib.filter() | list(FilterLib.filter())) :: list(FilterLib.filter())
-      def filter_validate(filters) when is_list(filters) do
+      @spec filter_clean(FilterLib.filter() | list(FilterLib.filter())) :: list(FilterLib.filter())
+      def filter_clean(filters) when is_list(filters) do
         fields = filter_fields()
 
         []
-        |> Linklab.DomainLogic.FilterLib.__filter_validator__(filters, fields)
+        |> Linklab.DomainLogic.FilterLib.__filter_cleaner__(filters, fields)
         |> Enum.reverse()
       end
 
-      def filter_validate(filter), do: filter_validate([filter])
+      def filter_clean(filter), do: filter_clean([filter])
+
+      @impl true
+      @spec filter_validate(FilterLib.filter() | list(FilterLib.filter())) :: list(FilterLib.filter()) | {:error, String.t}
+      def filter_validate(filters) when is_list(filters) do
+        fields = filter_fields()
+
+        case Linklab.DomainLogic.FilterLib.__filter_validator__([], filters, fields) do
+          {:error, reason} ->
+            {:error, "Invalid filter : #{reason}"}
+          filters ->
+            Enum.reverse(filters)
+        end
+      end
+
+      def filter_validate(filter), do: filter_clean([filter])
     end
   end
 
@@ -107,6 +123,24 @@ defmodule Linklab.DomainLogic.FilterLib do
   end
 
   @doc false
+  def __filter_cleaner__(acc, [], _fields), do: acc
+
+  def __filter_cleaner__(acc, [{name, op, value} | tail], fields) do
+    with {:ok, name} <- validate_field_name(fields, name),
+         {:ok, op} <- validate_field_op(op, Keyword.get(fields, name)),
+         {:ok, value} <- validate_field_value(value, Keyword.get(fields, name), op) do
+      __filter_cleaner__([{name, op, value} | acc], tail, fields)
+    else
+      {:error, _reason} ->
+        __filter_cleaner__(acc, tail, fields)
+    end
+  end
+
+  def __filter_cleaner__(acc, [_ | tail], fields) do
+    __filter_cleaner__(acc, tail, fields)
+  end
+
+  @doc false
   def __filter_validator__(acc, [], _fields), do: acc
 
   def __filter_validator__(acc, [{name, op, value} | tail], fields) do
@@ -115,9 +149,13 @@ defmodule Linklab.DomainLogic.FilterLib do
          {:ok, value} <- validate_field_value(value, Keyword.get(fields, name), op) do
       __filter_validator__([{name, op, value} | acc], tail, fields)
     else
-      {:error, _reason} ->
-        __filter_validator__(acc, tail, fields)
+      error ->
+        error
     end
+  end
+
+  def __filter_validator__(_acc, _filter, _fields) do
+    {:error, "Invalid format"}
   end
 
   defp filter_builder_item(query, name, :gt, value) do
