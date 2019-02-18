@@ -30,7 +30,7 @@ defmodule Linklab.DomainLogic.Filter.FilterBooleanTest do
     end
 
     test "invalid value" do
-      assert FilterBoolean.validate_value("ERROR", :eq) == {:error, "Invalid boolean"}
+      assert FilterBoolean.validate_value("ERROR", :eq) == {:error, "Invalid value for boolean"}
     end
   end
 end

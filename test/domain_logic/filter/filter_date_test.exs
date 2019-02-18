@@ -21,7 +21,7 @@ defmodule Linklab.DomainLogic.Filter.FilterDateTest do
     end
 
     test "invalid string" do
-      assert FilterDate.validate_value("WRONG", :gt) == {:error, "Invalid date"}
+      assert FilterDate.validate_value("WRONG", :gt) == {:error, "Invalid value for date"}
     end
   end
 
@@ -32,7 +32,7 @@ defmodule Linklab.DomainLogic.Filter.FilterDateTest do
     end
 
     test "invalid unix timestamp" do
-      assert FilterDate.validate_value(999_999_999_999, :gt) == {:error, "Invalid date"}
+      assert FilterDate.validate_value(999_999_999_999, :gt) == {:error, "Invalid value for date"}
     end
   end
 
@@ -45,7 +45,7 @@ defmodule Linklab.DomainLogic.Filter.FilterDateTest do
 
     test "invalid map" do
       map = %{}
-      assert FilterDate.validate_value(map, :gt) == {:error, "Invalid date"}
+      assert FilterDate.validate_value(map, :gt) == {:error, "Invalid value for date"}
     end
   end
 
@@ -58,7 +58,7 @@ defmodule Linklab.DomainLogic.Filter.FilterDateTest do
 
     test "invalid tupple" do
       tupple = {2002, 12, 1}
-      assert FilterDate.validate_value(tupple, :gt) == {:error, "Invalid date"}
+      assert FilterDate.validate_value(tupple, :gt) == {:error, "Invalid value for date"}
     end
   end
 

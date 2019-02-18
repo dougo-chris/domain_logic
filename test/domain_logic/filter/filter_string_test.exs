@@ -12,11 +12,11 @@ defmodule Linklab.DomainLogic.Filter.FilterStringTest do
   end
 
   test "invalid value" do
-    assert FilterString.validate_value(~r/WRONG/, :gt) == {:error, "Invalid string"}
+    assert FilterString.validate_value(~r/WRONG/, :gt) == {:error, "Invalid value for string"}
   end
 
   test "invalid in" do
-    assert FilterString.validate_value([~r/WRONG/], :in) == {:error, "Invalid string"}
+    assert FilterString.validate_value([~r/WRONG/], :in) == {:error, "Invalid value for string"}
   end
 
   describe "validate_value : string" do

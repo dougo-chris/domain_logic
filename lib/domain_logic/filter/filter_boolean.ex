@@ -16,7 +16,7 @@ defmodule Linklab.DomainLogic.Filter.FilterBoolean do
       is_binary(value) && value == "no" -> {:ok, false}
       is_integer(value) && value == 1 -> {:ok, true}
       is_integer(value) && value == 0 -> {:ok, false}
-      true -> {:error, "Invalid boolean"}
+      true -> {:error, "Invalid value for boolean"}
     end
   end
 end

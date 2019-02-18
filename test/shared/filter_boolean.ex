@@ -22,7 +22,7 @@ defmodule Linklab.DomainLogic.Test.FilterBoolean do
       ######################################
       # NOT A BOOLEAN
       ######################################
-      assert_raise ArgumentError, ~r/Invalid boolean/, fn ->
+      assert_raise ArgumentError, ~r/Invalid value for boolean/, fn ->
         op = [{unquote(field), :eq, "error value"}]
 
         unquote(domain).filter_by(unquote(table), op)

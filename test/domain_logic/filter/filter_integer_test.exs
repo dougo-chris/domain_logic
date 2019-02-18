@@ -42,7 +42,7 @@ defmodule Linklab.DomainLogic.Filter.FilterIntegerTest do
     end
 
     test "invalid integer" do
-      assert FilterInteger.validate_value("WRONG", :gt) == {:error, "Invalid integer"}
+      assert FilterInteger.validate_value("WRONG", :gt) == {:error, "Invalid value for integer"}
     end
 
     test "in value" do

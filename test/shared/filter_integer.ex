@@ -22,7 +22,7 @@ defmodule Linklab.DomainLogic.Test.FilterInteger do
       ######################################
       # NOT AN INTEGER
       ######################################
-      assert_raise ArgumentError, ~r/Invalid integer/, fn ->
+      assert_raise ArgumentError, ~r/Invalid value/, fn ->
         op = [{unquote(field), :eq, "not good"}]
 
         unquote(domain).filter_by(unquote(table), op)

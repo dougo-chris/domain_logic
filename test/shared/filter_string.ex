@@ -22,7 +22,7 @@ defmodule Linklab.DomainLogic.Test.FilterString do
       ######################################
       # NOT A STRING
       ######################################
-      assert_raise ArgumentError, ~r/Invalid string/, fn ->
+      assert_raise ArgumentError, ~r/Invalid value/, fn ->
         op = [{unquote(field), :eq, ~r/WHY/}]
 
         unquote(domain).filter_by(unquote(table), op)

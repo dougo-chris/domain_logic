@@ -164,6 +164,6 @@ defmodule Linklab.DomainLogic.SortLib do
   end
 
   defp validate_field_dir(dir) do
-    {:error, "Invalid dir : #{dir}"}
+    {:error, "Invalid operation : #{dir}"}
   end
 end

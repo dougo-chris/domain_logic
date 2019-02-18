@@ -26,11 +26,11 @@ defmodule Linklab.DomainLogic.Filter.FilterString do
           {:ok, Integer.to_string(value)}
 
         _ ->
-          {:error, "Invalid string"}
+          {:error, "Invalid value for string"}
       end)
 
     if Enum.find(values, fn {result, _} -> result == :error end) do
-      {:error, "Invalid string"}
+      {:error, "Invalid value for string"}
     else
       {:ok, Enum.map(values, fn {_, value} -> value end)}
     end
@@ -45,6 +45,6 @@ defmodule Linklab.DomainLogic.Filter.FilterString do
   end
 
   def validate_value(_value, _op) do
-    {:error, "Invalid string"}
+    {:error, "Invalid value for string"}
   end
 end

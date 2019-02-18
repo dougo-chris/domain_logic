@@ -20,14 +20,14 @@ defmodule Linklab.DomainLogic.Filter.FilterDatetime do
       validate_value({year, month, day, hour, minute, second}, op)
     else
       _ ->
-        {:error, "Invalid date"}
+        {:error, "Invalid value for datetime"}
     end
   end
 
   def validate_value(value, op) when is_integer(value) do
     case DateTime.from_unix(value) do
       {:ok, datetime} -> validate_value(datetime, op)
-      _ -> {:error, "Invalid date"}
+      _ -> {:error, "Invalid value for datetime"}
     end
   end
 
@@ -52,6 +52,6 @@ defmodule Linklab.DomainLogic.Filter.FilterDatetime do
   end
 
   def validate_value(_value, _op) do
-    {:error, "Invalid date"}
+    {:error, "Invalid value for datetime"}
   end
 end

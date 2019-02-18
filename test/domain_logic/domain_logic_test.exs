@@ -170,6 +170,80 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
       test_filter_by_integer(ProductDomain, ProductTable, :product, :price)
       test_filter_by_boolean(ProductDomain, ProductTable, :product, :available)
     end
+
+    test "invalid field name" do
+      assert_raise ArgumentError, ~r/Invalid field/, fn ->
+        ProductDomain.filter_by(ProductTable, {:wrong, :eq, 1001})
+      end
+    end
+
+    test "invalid field operation" do
+      assert_raise ArgumentError, ~r/Invalid operation/, fn ->
+        ProductDomain.filter_by(ProductTable, {:id, :invalid, 1001})
+      end
+    end
+
+    test "invalid field value" do
+      assert_raise ArgumentError, ~r/Invalid value/, fn ->
+        ProductDomain.filter_by(ProductTable, {:id, :eq, ~r/bill/})
+      end
+    end
+  end
+
+  describe "#filter_validate" do
+    test "clean valid filters" do
+      filter =
+        ProductDomain.filter_validate(
+          [
+            {:id, :eq, 1001},
+            {"name", "eq", "BOB"}
+          ]
+        )
+
+      assert filter == [{:id, :eq, 1001}, {:name, :eq, "BOB"}]
+    end
+
+    test "fail on first invalid field" do
+      {:error, reason} =
+        ProductDomain.filter_validate(
+          [
+            {:id, :eq, 1001},
+            {"name", "eq", "BOB"},
+            {:unknown, :eq, 2002},
+            {"wrong", :eq, 2002}
+          ]
+        )
+
+      assert reason == "Invalid filter : Invalid field : unknown"
+    end
+  end
+
+  describe "#filter_clean" do
+    test "clean valid filters" do
+      filter =
+        ProductDomain.filter_clean(
+          [
+            {:id, :eq, 1001},
+            {"name", "eq", "BOB"}
+          ]
+        )
+
+      assert filter == [{:id, :eq, 1001}, {:name, :eq, "BOB"}]
+    end
+
+    test "remove invalid filters" do
+      filter =
+        ProductDomain.filter_clean(
+          [
+            {:id, :eq, 1001},
+            {"name", "eq", "BOB"},
+            {:unknown, :eq, 2002},
+            {"wrong", :eq, 2002}
+          ]
+        )
+
+      assert filter == [{:id, :eq, 1001}, {:name, :eq, "BOB"}]
+    end
   end
 
   describe "#sort_by" do
@@ -177,6 +251,74 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
       test_sort_by_integer(ProductDomain, ProductTable, :product, :id)
       test_sort_by_string(ProductDomain, ProductTable, :product, :name)
       test_sort_by_integer(ProductDomain, ProductTable, :product, :price)
+    end
+
+    test "invalid field name" do
+      assert_raise ArgumentError, ~r/Invalid field/, fn ->
+        ProductDomain.sort_by(ProductTable, {:wrong, :asc})
+      end
+    end
+
+    test "invalid field operation" do
+      assert_raise ArgumentError, ~r/Invalid operation/, fn ->
+        ProductDomain.sort_by(ProductTable, {:id, :invalid})
+      end
+    end
+  end
+
+  describe "#sort_validate" do
+    test "clean valid sorts" do
+      sort =
+        ProductDomain.sort_validate(
+          [
+            {:id, :asc},
+            {"name", "asc"},
+          ]
+        )
+
+      assert sort == [{:id, :asc}, {:name, :asc}]
+    end
+
+    test "fail on first invalid field" do
+      {:error, reason} =
+        ProductDomain.sort_validate(
+          [
+            {:id, :asc},
+            {"name", "asc"},
+            {:unknown, :desc},
+            {"wrong", :desc}
+          ]
+        )
+
+      assert reason == "Invalid sort : Invalid field : unknown"
+    end
+  end
+
+  describe "#sort_clean" do
+    test "clean valid sorts" do
+      sort =
+        ProductDomain.sort_clean(
+          [
+            {:id, :asc},
+            {"name", "asc"},
+          ]
+        )
+
+      assert sort == [{:id, :asc}, {:name, :asc}]
+    end
+
+    test "remove invalid sorts" do
+      sort =
+        ProductDomain.sort_clean(
+          [
+            {:id, :asc},
+            {"name", "asc"},
+            {:unknown, :desc},
+            {"wrong", :desc}
+          ]
+        )
+
+      assert sort == [{:id, :asc}, {:name, :asc}]
     end
   end
 
@@ -196,6 +338,23 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
         |> Enum.map(fn record -> record.price end)
 
       assert results == [33, 44, 55]
+    end
+
+    test "limit only" do
+      insert(:product, price: 11)
+      insert(:product, price: 22)
+      insert(:product, price: 33)
+      insert(:product, price: 44)
+      insert(:product, price: 55)
+      insert(:product, price: 66)
+
+      results =
+        ProductTable
+        |> ProductDomain.limit_by(3)
+        |> ProductDomain.all()
+        |> Enum.map(fn result -> result.price end)
+
+      assert results == [11, 22, 33]
     end
   end
 
