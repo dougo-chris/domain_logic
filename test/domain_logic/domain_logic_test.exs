@@ -216,6 +216,19 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
 
       assert reason == "Invalid filter : Invalid field : unknown"
     end
+
+    test "fail on invalid item" do
+      {:error, reason} =
+        ProductDomain.filter_validate(
+          [
+            {:id, :eq, 1001},
+            {"name", "eq", "BOB"},
+            "WRONG",
+          ]
+        )
+
+      assert reason == "Invalid filter : Invalid format"
+    end
   end
 
   describe "#filter_clean" do
@@ -238,7 +251,8 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
             {:id, :eq, 1001},
             {"name", "eq", "BOB"},
             {:unknown, :eq, 2002},
-            {"wrong", :eq, 2002}
+            {"wrong", :eq, 2002},
+            "WRONG"
           ]
         )
 
@@ -292,6 +306,19 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
 
       assert reason == "Invalid sort : Invalid field : unknown"
     end
+
+    test "fail on invalid format" do
+      {:error, reason} =
+        ProductDomain.sort_validate(
+          [
+            {:id, :asc},
+            {"name", "asc"},
+            "WRONG"
+          ]
+        )
+
+      assert reason == "Invalid sort : Invalid format"
+    end
   end
 
   describe "#sort_clean" do
@@ -314,7 +341,8 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
             {:id, :asc},
             {"name", "asc"},
             {:unknown, :desc},
-            {"wrong", :desc}
+            {"wrong", :desc},
+            "WRONG"
           ]
         )
 
