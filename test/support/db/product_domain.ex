@@ -1,7 +1,9 @@
 defmodule Linklab.DomainLogic.Db.ProductDomain do
   @moduledoc false
 
-  use Linklab.DomainLogic, repo: Linklab.DomainLogic.Repo
+  use Linklab.DomainLogic,
+      repo: Linklab.DomainLogic.Repo,
+      table: Linklab.DomainLogic.Db.ProductTable
 
   register_filter do
     filter(:id, :integer)

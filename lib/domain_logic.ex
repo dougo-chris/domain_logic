@@ -2,14 +2,12 @@ defmodule Linklab.DomainLogic do
   @moduledoc false
 
   defmacro __using__(opts) do
-    repo = opts[:repo]
-
     quote do
       use Linklab.DomainLogic.FilterLib
       use Linklab.DomainLogic.SortLib
       use Linklab.DomainLogic.LimitLib
       use Linklab.DomainLogic.PreloadLib
-      use Linklab.DomainLogic.FindLib, repo: unquote(repo)
+      use Linklab.DomainLogic.FindLib, repo: unquote(opts[:repo]), table: unquote(opts[:table])
     end
   end
 end

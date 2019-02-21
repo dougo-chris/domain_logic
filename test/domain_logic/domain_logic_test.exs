@@ -4,7 +4,7 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
   alias Linklab.DomainLogic.Db.ProductDomain
   alias Linklab.DomainLogic.Db.ProductTable
 
-  describe "#find" do
+  describe "#find query" do
     test "it should be valid" do
       product = insert(:product)
       {:ok, record} = ProductDomain.find(ProductTable, {:id, product.id})
@@ -17,7 +17,20 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
     end
   end
 
-  describe "#one" do
+  describe "#find table" do
+    test "it should be valid" do
+      product = insert(:product)
+      {:ok, record} = ProductDomain.find({:id, product.id})
+      assert record.id == product.id
+    end
+
+    test "it should be invalid" do
+      {:error, reason} = ProductDomain.find({:id, 1001})
+      assert reason == "Not found"
+    end
+  end
+
+  describe "#one query" do
     test "it should be valid" do
       product = insert(:product)
       {:ok, record} = ProductDomain.one(ProductTable)
@@ -34,12 +47,34 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
       insert(:product)
 
       assert_raise Ecto.MultipleResultsError, fn ->
-        ProductDomain.one(ProductTable)
+        ProductDomain.one()
       end
     end
   end
 
-  describe "#all" do
+  describe "#one table" do
+    test "it should be valid" do
+      product = insert(:product)
+      {:ok, record} = ProductDomain.one()
+      assert record.id == product.id
+    end
+
+    test "it should be invalid when NO records" do
+      {:error, result} = ProductDomain.one()
+      assert result == "Not found"
+    end
+
+    test "it should raise an error if mutiple results" do
+      insert(:product)
+      insert(:product)
+
+      assert_raise Ecto.MultipleResultsError, fn ->
+        ProductDomain.one()
+      end
+    end
+  end
+
+  describe "#all query" do
     test "it should be valid" do
       first = insert(:product)
       next = insert(:product)
@@ -60,7 +95,28 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
     end
   end
 
-  describe "#paginate" do
+  describe "#all table" do
+    test "it should be valid" do
+      first = insert(:product)
+      next = insert(:product)
+      last = insert(:product)
+      records = ProductDomain.all()
+
+      ids =
+        records
+        |> Enum.map(fn record -> record.id end)
+        |> Enum.sort_by(fn id -> id end)
+
+      assert ids == [first.id, next.id, last.id]
+    end
+
+    test "it should be empty when NO records" do
+      records = ProductDomain.all()
+      assert records == []
+    end
+  end
+
+  describe "#paginate query" do
     test "it should return the first page" do
       first = insert(:product)
       next = insert(:product)
@@ -150,7 +206,85 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
     end
   end
 
-  describe "#count" do
+  describe "#paginate table" do
+    test "it should return the first page" do
+      first = insert(:product)
+      next = insert(:product)
+      _last = insert(:product)
+
+      result = ProductDomain.paginate({1, 2})
+
+      ids =
+        result.entries
+        |> Enum.map(fn record -> record.id end)
+        |> Enum.sort_by(fn id -> id end)
+
+      assert ids == [first.id, next.id]
+      assert result.page_number == 1
+      assert result.page_size == 2
+      assert result.total_entries == 3
+      assert result.total_pages == 2
+    end
+
+    test "it should be return more pages" do
+      _first = insert(:product)
+      next = insert(:product)
+      _last = insert(:product)
+
+      result = ProductDomain.paginate({2, 1})
+
+      ids =
+        result.entries
+        |> Enum.map(fn record -> record.id end)
+        |> Enum.sort_by(fn id -> id end)
+
+      assert ids == [next.id]
+      assert result.page_number == 2
+      assert result.page_size == 1
+      assert result.total_entries == 3
+      assert result.total_pages == 3
+    end
+
+    test "it should return the first page when before the first" do
+      first = insert(:product)
+      _next = insert(:product)
+      _last = insert(:product)
+
+      result = ProductDomain.paginate({0, 1})
+
+      ids =
+        result.entries
+        |> Enum.map(fn record -> record.id end)
+        |> Enum.sort_by(fn id -> id end)
+
+      assert ids == [first.id]
+      assert result.page_number == 1
+      assert result.page_size == 1
+      assert result.total_entries == 3
+      assert result.total_pages == 3
+    end
+
+    test "it should return the last page when past the end" do
+      _first = insert(:product)
+      _next = insert(:product)
+      last = insert(:product)
+
+      result = ProductDomain.paginate({100, 1})
+
+      ids =
+        result.entries
+        |> Enum.map(fn record -> record.id end)
+        |> Enum.sort_by(fn id -> id end)
+
+      assert ids == [last.id]
+      assert result.page_number == 3
+      assert result.page_size == 1
+      assert result.total_entries == 3
+      assert result.total_pages == 3
+    end
+  end
+
+  describe "#count query" do
     test "it should be zero with no records" do
       assert ProductDomain.count(ProductTable) == 0
     end
@@ -160,6 +294,19 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
       insert(:product)
       insert(:product)
       assert ProductDomain.count(ProductTable) == 3
+    end
+  end
+
+  describe "#count table" do
+    test "it should be zero with no records" do
+      assert ProductDomain.count() == 0
+    end
+
+    test "it should be the number of records" do
+      insert(:product)
+      insert(:product)
+      insert(:product)
+      assert ProductDomain.count() == 3
     end
   end
 
