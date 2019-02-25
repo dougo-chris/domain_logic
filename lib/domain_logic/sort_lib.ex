@@ -11,7 +11,7 @@ defmodule Linklab.DomainLogic.SortLib do
   @callback sort_fields() :: list(sort_field)
   @callback sort_by(Ecto.Schema.t(), sort | list(sort)) :: Ecto.Queryable.t()
   @callback sort_clean(sort | list(sort)) :: list(sort)
-  @callback sort_validate(sort | list(sort)) :: list(sort) | {:error, String.t}
+  @callback sort_validate(sort | list(sort)) :: {:ok, list(sort)} | {:error, String.t}
 
   defmacro __using__(_opts) do
     quote do
@@ -46,7 +46,7 @@ defmodule Linklab.DomainLogic.SortLib do
       def sort_clean(sort), do: sort_clean([sort])
 
       @impl true
-      @spec sort_validate(SortLib.sort() | list(SortLib.sort())) :: list(SortLib.sort()) | {:error, String.t}
+      @spec sort_validate(SortLib.sort() | list(SortLib.sort())) :: {:ok, list(SortLib.sort())} | {:error, String.t}
       def sort_validate(sorts) when is_list(sorts) do
         fields = sort_fields()
 
@@ -54,7 +54,7 @@ defmodule Linklab.DomainLogic.SortLib do
           {:error, reason} ->
             {:error, "Invalid sort : #{reason}"}
           sorts ->
-            Enum.reverse(sorts)
+            {:ok, Enum.reverse(sorts)}
         end
       end
 

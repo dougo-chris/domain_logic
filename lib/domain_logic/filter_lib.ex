@@ -28,7 +28,7 @@ defmodule Linklab.DomainLogic.FilterLib do
   @callback filter_fields() :: list(filter_field)
   @callback filter_by(Ecto.Schema.t(), filter | list(filter)) :: Ecto.Queryable.t()
   @callback filter_clean(filter | list(filter)) :: list(filter)
-  @callback filter_validate(filter | list(filter)) :: list(filter) | {:error, String.t}
+  @callback filter_validate(filter | list(filter)) :: {:ok, list(filter)} | {:error, String.t}
 
   defmacro __using__(_opts) do
     quote do
@@ -63,7 +63,7 @@ defmodule Linklab.DomainLogic.FilterLib do
       def filter_clean(filter), do: filter_clean([filter])
 
       @impl true
-      @spec filter_validate(FilterLib.filter() | list(FilterLib.filter())) :: list(FilterLib.filter()) | {:error, String.t}
+      @spec filter_validate(FilterLib.filter() | list(FilterLib.filter())) :: {:ok, list(FilterLib.filter())} | {:error, String.t}
       def filter_validate(filters) when is_list(filters) do
         fields = filter_fields()
 
@@ -71,7 +71,7 @@ defmodule Linklab.DomainLogic.FilterLib do
           {:error, reason} ->
             {:error, "Invalid filter : #{reason}"}
           filters ->
-            Enum.reverse(filters)
+            {:ok, Enum.reverse(filters)}
         end
       end
 

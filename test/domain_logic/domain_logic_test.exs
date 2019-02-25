@@ -79,7 +79,7 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
       first = insert(:product)
       next = insert(:product)
       last = insert(:product)
-      records = ProductDomain.all(ProductTable)
+      records = ProductDomain.all()
 
       ids =
         records
@@ -90,7 +90,7 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
     end
 
     test "it should be empty when NO records" do
-      records = ProductDomain.all(ProductTable)
+      records = ProductDomain.all()
       assert records == []
     end
   end
@@ -339,7 +339,7 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
 
   describe "#filter_validate" do
     test "clean valid filters" do
-      filter =
+      {:ok, filter} =
         ProductDomain.filter_validate(
           [
             {:id, :eq, 1001},
@@ -429,7 +429,7 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
 
   describe "#sort_validate" do
     test "clean valid sorts" do
-      sort =
+      {:ok, sort} =
         ProductDomain.sort_validate(
           [
             {:id, :asc},
