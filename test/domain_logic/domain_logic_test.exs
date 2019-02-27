@@ -318,6 +318,30 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
       test_filter_by_boolean(ProductDomain, ProductTable, :product, :available)
     end
 
+    test "field eq nil" do
+      p1 = insert(:product, name: nil)
+      insert(:product, name: "test")
+
+      [result] =
+        ProductTable
+        |> ProductDomain.filter_by({:name, :eq, nil})
+        |> ProductDomain.repo().all()
+
+      assert result.id == p1.id
+    end
+
+    test "field ne nil" do
+      insert(:product, name: nil)
+      p1 = insert(:product, name: "test")
+
+      [result] =
+        ProductTable
+        |> ProductDomain.filter_by({:name, :ne, nil})
+        |> ProductDomain.repo().all()
+
+      assert result.id == p1.id
+    end
+
     test "invalid field name" do
       assert_raise ArgumentError, ~r/Invalid field/, fn ->
         ProductDomain.filter_by(ProductTable, {:wrong, :eq, 1001})

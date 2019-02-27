@@ -182,8 +182,16 @@ defmodule Linklab.DomainLogic.FilterLib do
     from(q in query, where: field(q, ^name) in ^value)
   end
 
+  defp filter_builder_item(query, name, :ne, nil) do
+    from(q in query, where: not is_nil(field(q, ^name)))
+  end
+
   defp filter_builder_item(query, name, :ne, value) do
     from(q in query, where: field(q, ^name) != ^value)
+  end
+
+  defp filter_builder_item(query, name, _op, nil) do
+    from(q in query, where: is_nil(field(q, ^name)))
   end
 
   defp filter_builder_item(query, name, _op, value) do
