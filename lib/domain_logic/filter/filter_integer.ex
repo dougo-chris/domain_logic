@@ -5,14 +5,14 @@ defmodule Linklab.DomainLogic.Filter.FilterInteger do
     {:error, "Invalid operation : #{op}"}
   end
 
-  def validate_value(nil, :in), do: {:ok, [nil]}
+  def validate_value(nil, op) when op in [:in, :ni], do: {:ok, [nil]}
   def validate_value(nil, _op), do: {:ok, nil}
 
-  def validate_value(value, :in) when is_integer(value) do
+  def validate_value(value, op) when op in [:in, :ni] and is_integer(value) do
     {:ok, [value]}
   end
 
-  def validate_value(value, :in) when is_binary(value) do
+  def validate_value(value, op) when op in [:in, :ni] and is_binary(value) do
     case Integer.parse(value) do
       :error ->
         {:error, "Invalid value for integer"}
@@ -22,7 +22,7 @@ defmodule Linklab.DomainLogic.Filter.FilterInteger do
     end
   end
 
-  def validate_value(value, :in) when is_list(value) do
+  def validate_value(value, op) when op in [:in, :ni] and is_list(value) do
     values =
       value
       |> Enum.map(fn

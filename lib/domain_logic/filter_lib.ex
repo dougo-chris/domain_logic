@@ -4,7 +4,7 @@ defmodule Linklab.DomainLogic.FilterLib do
 
     Filters are structured as {field, op, value}
     - field is the field in the **register_filter**
-    - operation in :gt, :ge, :lt, :le, :lk, :in, :ne, :eq
+    - operation in :gt, :ge, :lt, :le, :lk, :in, :ni, :ne, :eq
 
     ## Examples
 
@@ -23,7 +23,7 @@ defmodule Linklab.DomainLogic.FilterLib do
 
   @type filter_type :: :integer | :string
   @type filter_field :: {atom, filter_type}
-  @type filter :: {atom | String.t(), :gt | :ge | :lt | :le | :lk | :in | :ne | :eq | String.t(), any()}
+  @type filter :: {atom | String.t(), :gt | :ge | :lt | :le | :lk | :in | :ni | :ne | :eq | String.t(), any()}
 
   @callback filter_fields() :: list(filter_field)
   @callback filter_by(Ecto.Schema.t(), filter | list(filter)) :: Ecto.Queryable.t()
@@ -182,6 +182,10 @@ defmodule Linklab.DomainLogic.FilterLib do
     from(q in query, where: field(q, ^name) in ^value)
   end
 
+  defp filter_builder_item(query, name, :ni, value) do
+    from(q in query, where: field(q, ^name) not in ^value)
+  end
+
   defp filter_builder_item(query, name, :ne, nil) do
     from(q in query, where: not is_nil(field(q, ^name)))
   end
@@ -238,7 +242,7 @@ defmodule Linklab.DomainLogic.FilterLib do
     {:error, "Invalid operation : lk"}
   end
 
-  defp validate_field_op(op, _type) when op in [:gt, :ge, :lt, :le, :lk, :in, :ne, :eq] do
+  defp validate_field_op(op, _type) when op in [:gt, :ge, :lt, :le, :lk, :in, :ni, :ne, :eq] do
     {:ok, op}
   end
 

@@ -219,6 +219,25 @@ defmodule Linklab.DomainLogic.Test.FilterString do
 
       unquote(domain).repo().delete(r1)
       unquote(domain).repo().delete(r2)
+
+      ######################################
+      # NI
+      ######################################
+      r1 = insert(unquote(model), Map.put(unquote(params), unquote(field), "FIND ME"))
+      r2 = insert(unquote(model), Map.put(unquote(params), unquote(field), "VALUE"))
+
+      op = [{unquote(field), :ni, ["FIND ME", "AND ME"]}]
+
+      results =
+        unquote(table)
+        |> unquote(domain).filter_by(op)
+        |> unquote(domain).repo().all()
+        |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
+
+      assert Enum.sort(results) == ["VALUE"]
+
+      unquote(domain).repo().delete(r1)
+      unquote(domain).repo().delete(r2)
     end
   end
 end

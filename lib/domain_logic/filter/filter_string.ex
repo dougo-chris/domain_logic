@@ -1,18 +1,18 @@
 defmodule Linklab.DomainLogic.Filter.FilterString do
   @moduledoc false
 
-  def validate_value(nil, :in), do: {:ok, [nil]}
+  def validate_value(nil, op) when op in [:in, :ni], do: {:ok, [nil]}
   def validate_value(nil, _op), do: {:ok, nil}
 
-  def validate_value(value, :in) when is_binary(value) do
+  def validate_value(value, op) when op in [:in, :ni] and is_binary(value) do
     {:ok, [value]}
   end
 
-  def validate_value(value, :in) when is_integer(value) do
+  def validate_value(value, op) when op in [:in, :ni] and is_integer(value) do
     {:ok, [Integer.to_string(value)]}
   end
 
-  def validate_value(value, :in) when is_list(value) do
+  def validate_value(value, op) when op in [:in, :ni] when is_list(value) do
     values =
       value
       |> Enum.map(fn

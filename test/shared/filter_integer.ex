@@ -203,6 +203,25 @@ defmodule Linklab.DomainLogic.Test.FilterInteger do
 
       unquote(domain).repo().delete(r1)
       unquote(domain).repo().delete(r2)
+
+      ######################################
+      # NI
+      ######################################
+      r1 = insert(unquote(model), Map.put(unquote(params), unquote(field), 1001))
+      r2 = insert(unquote(model), Map.put(unquote(params), unquote(field), 1111))
+
+      op = [{unquote(field), :ni, [1001, 2002]}]
+
+      results =
+        unquote(table)
+        |> unquote(domain).filter_by(op)
+        |> unquote(domain).repo().all()
+        |> Enum.map(fn result -> Map.get(result, unquote(field)) end)
+
+      assert Enum.sort(results) == [1111]
+
+      unquote(domain).repo().delete(r1)
+      unquote(domain).repo().delete(r2)
     end
   end
 end

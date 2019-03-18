@@ -249,6 +249,15 @@ defmodule Linklab.DomainLogic.Test.FilterBoolean do
 
         unquote(domain).filter_by(unquote(table), op)
       end
+
+      ######################################
+      # NI
+      ######################################
+      assert_raise ArgumentError, ~r/Invalid operation/, fn ->
+        op = [{unquote(field), :ni, true}]
+
+        unquote(domain).filter_by(unquote(table), op)
+      end
     end
   end
 end

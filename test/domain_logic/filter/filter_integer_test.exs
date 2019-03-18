@@ -18,6 +18,10 @@ defmodule Linklab.DomainLogic.Filter.FilterIntegerTest do
     assert FilterInteger.validate_value(nil, :in) == {:ok, [nil]}
   end
 
+  test "nil :ni" do
+    assert FilterInteger.validate_value(nil, :in) == {:ok, [nil]}
+  end
+
   describe "validate_value : integer" do
     test "valid integer" do
       assert FilterInteger.validate_value(1111, :gt) == {:ok, 1111}
@@ -31,8 +35,20 @@ defmodule Linklab.DomainLogic.Filter.FilterIntegerTest do
       assert FilterInteger.validate_value([1111, 2222], :in) == {:ok, [1111, 2222]}
     end
 
-    test "invalid list" do
+    test "in invalid list" do
       assert FilterInteger.validate_value([1111, nil], :in) == {:ok, [1111, nil]}
+    end
+
+    test "ni value" do
+      assert FilterInteger.validate_value(1111, :ni) == {:ok, [1111]}
+    end
+
+    test "ni list" do
+      assert FilterInteger.validate_value([1111, 2222], :ni) == {:ok, [1111, 2222]}
+    end
+
+    test "ni invalid list" do
+      assert FilterInteger.validate_value([1111, nil], :ni) == {:ok, [1111, nil]}
     end
   end
 
@@ -53,8 +69,20 @@ defmodule Linklab.DomainLogic.Filter.FilterIntegerTest do
       assert FilterInteger.validate_value(["1111", 2222], :in) == {:ok, [1111, 2222]}
     end
 
-    test "invalid list" do
+    test "in invalid list" do
       assert FilterInteger.validate_value(["1111", nil], :in) == {:ok, [1111, nil]}
+    end
+
+    test "ni value" do
+      assert FilterInteger.validate_value("1111", :ni) == {:ok, [1111]}
+    end
+
+    test "ni list" do
+      assert FilterInteger.validate_value(["1111", 2222], :ni) == {:ok, [1111, 2222]}
+    end
+
+    test "ni invalid list" do
+      assert FilterInteger.validate_value(["1111", nil], :ni) == {:ok, [1111, nil]}
     end
   end
 end
