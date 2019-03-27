@@ -148,9 +148,6 @@ defmodule Linklab.DomainLogic.FilterLib do
          {:ok, op} <- validate_field_op(op, Keyword.get(fields, name)),
          {:ok, value} <- validate_field_value(value, Keyword.get(fields, name), op) do
       __filter_validator__([{name, op, value} | acc], tail, fields)
-    else
-      error ->
-        error
     end
   end
 

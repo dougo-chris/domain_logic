@@ -118,9 +118,6 @@ defmodule Linklab.DomainLogic.SortLib do
     with {:ok, name} <- validate_field_name(fields, name),
          {:ok, dir} <- validate_field_dir(dir) do
       __sort_validator__([{name, dir} | acc], tail, fields)
-    else
-      error ->
-        error
     end
   end
 
