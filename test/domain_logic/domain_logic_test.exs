@@ -364,39 +364,33 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
   describe "#filter_validate" do
     test "clean valid filters" do
       {:ok, filter} =
-        ProductDomain.filter_validate(
-          [
-            {:id, :eq, 1001},
-            {"name", "eq", "BOB"}
-          ]
-        )
+        ProductDomain.filter_validate([
+          {:id, :eq, 1001},
+          {"name", "eq", "BOB"}
+        ])
 
       assert filter == [{:id, :eq, 1001}, {:name, :eq, "BOB"}]
     end
 
     test "fail on first invalid field" do
       {:error, reason} =
-        ProductDomain.filter_validate(
-          [
-            {:id, :eq, 1001},
-            {"name", "eq", "BOB"},
-            {:unknown, :eq, 2002},
-            {"wrong", :eq, 2002}
-          ]
-        )
+        ProductDomain.filter_validate([
+          {:id, :eq, 1001},
+          {"name", "eq", "BOB"},
+          {:unknown, :eq, 2002},
+          {"wrong", :eq, 2002}
+        ])
 
       assert reason == "Invalid filter : Invalid field : unknown"
     end
 
     test "fail on invalid item" do
       {:error, reason} =
-        ProductDomain.filter_validate(
-          [
-            {:id, :eq, 1001},
-            {"name", "eq", "BOB"},
-            "WRONG",
-          ]
-        )
+        ProductDomain.filter_validate([
+          {:id, :eq, 1001},
+          {"name", "eq", "BOB"},
+          "WRONG"
+        ])
 
       assert reason == "Invalid filter : Invalid format"
     end
@@ -405,27 +399,23 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
   describe "#filter_clean" do
     test "clean valid filters" do
       filter =
-        ProductDomain.filter_clean(
-          [
-            {:id, :eq, 1001},
-            {"name", "eq", "BOB"}
-          ]
-        )
+        ProductDomain.filter_clean([
+          {:id, :eq, 1001},
+          {"name", "eq", "BOB"}
+        ])
 
       assert filter == [{:id, :eq, 1001}, {:name, :eq, "BOB"}]
     end
 
     test "remove invalid filters" do
       filter =
-        ProductDomain.filter_clean(
-          [
-            {:id, :eq, 1001},
-            {"name", "eq", "BOB"},
-            {:unknown, :eq, 2002},
-            {"wrong", :eq, 2002},
-            "WRONG"
-          ]
-        )
+        ProductDomain.filter_clean([
+          {:id, :eq, 1001},
+          {"name", "eq", "BOB"},
+          {:unknown, :eq, 2002},
+          {"wrong", :eq, 2002},
+          "WRONG"
+        ])
 
       assert filter == [{:id, :eq, 1001}, {:name, :eq, "BOB"}]
     end
@@ -454,39 +444,33 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
   describe "#sort_validate" do
     test "clean valid sorts" do
       {:ok, sort} =
-        ProductDomain.sort_validate(
-          [
-            {:id, :asc},
-            {"name", "asc"},
-          ]
-        )
+        ProductDomain.sort_validate([
+          {:id, :asc},
+          {"name", "asc"}
+        ])
 
       assert sort == [{:id, :asc}, {:name, :asc}]
     end
 
     test "fail on first invalid field" do
       {:error, reason} =
-        ProductDomain.sort_validate(
-          [
-            {:id, :asc},
-            {"name", "asc"},
-            {:unknown, :desc},
-            {"wrong", :desc}
-          ]
-        )
+        ProductDomain.sort_validate([
+          {:id, :asc},
+          {"name", "asc"},
+          {:unknown, :desc},
+          {"wrong", :desc}
+        ])
 
       assert reason == "Invalid sort : Invalid field : unknown"
     end
 
     test "fail on invalid format" do
       {:error, reason} =
-        ProductDomain.sort_validate(
-          [
-            {:id, :asc},
-            {"name", "asc"},
-            "WRONG"
-          ]
-        )
+        ProductDomain.sort_validate([
+          {:id, :asc},
+          {"name", "asc"},
+          "WRONG"
+        ])
 
       assert reason == "Invalid sort : Invalid format"
     end
@@ -495,27 +479,23 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
   describe "#sort_clean" do
     test "clean valid sorts" do
       sort =
-        ProductDomain.sort_clean(
-          [
-            {:id, :asc},
-            {"name", "asc"},
-          ]
-        )
+        ProductDomain.sort_clean([
+          {:id, :asc},
+          {"name", "asc"}
+        ])
 
       assert sort == [{:id, :asc}, {:name, :asc}]
     end
 
     test "remove invalid sorts" do
       sort =
-        ProductDomain.sort_clean(
-          [
-            {:id, :asc},
-            {"name", "asc"},
-            {:unknown, :desc},
-            {"wrong", :desc},
-            "WRONG"
-          ]
-        )
+        ProductDomain.sort_clean([
+          {:id, :asc},
+          {"name", "asc"},
+          {:unknown, :desc},
+          {"wrong", :desc},
+          "WRONG"
+        ])
 
       assert sort == [{:id, :asc}, {:name, :asc}]
     end

@@ -31,7 +31,10 @@ defmodule Linklab.DomainLogic.Filter.FilterDatetime do
     end
   end
 
-  def validate_value(%{year: year, month: month, day: day, hour: hour, minute: minute, second: second}, op) do
+  def validate_value(
+        %{year: year, month: month, day: day, hour: hour, minute: minute, second: second},
+        op
+      ) do
     validate_value({year, month, day, hour, minute, second}, op)
   end
 

@@ -6,7 +6,8 @@ defmodule Linklab.DomainLogic.Filter.FilterBooleanTest do
   test "invalid operation" do
     [:gt, :ge, :lt, :le, :lk, :in, :ni]
     |> Enum.each(fn operation ->
-      assert FilterBoolean.validate_value(true, operation) == {:error, "Invalid operation : #{operation}"}
+      assert FilterBoolean.validate_value(true, operation) ==
+               {:error, "Invalid operation : #{operation}"}
     end)
   end
 

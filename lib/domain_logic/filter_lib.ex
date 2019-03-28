@@ -23,12 +23,14 @@ defmodule Linklab.DomainLogic.FilterLib do
 
   @type filter_type :: :integer | :string
   @type filter_field :: {atom, filter_type}
-  @type filter :: {atom | String.t(), :gt | :ge | :lt | :le | :lk | :in | :ni | :ne | :eq | String.t(), any()}
+  @type filter ::
+          {atom | String.t(), :gt | :ge | :lt | :le | :lk | :in | :ni | :ne | :eq | String.t(),
+           any()}
 
   @callback filter_fields() :: list(filter_field)
   @callback filter_by(Ecto.Schema.t(), filter | list(filter)) :: Ecto.Queryable.t()
   @callback filter_clean(filter | list(filter)) :: list(filter)
-  @callback filter_validate(filter | list(filter)) :: {:ok, list(filter)} | {:error, String.t}
+  @callback filter_validate(filter | list(filter)) :: {:ok, list(filter)} | {:error, String.t()}
 
   defmacro __using__(_opts) do
     quote do
@@ -42,7 +44,8 @@ defmodule Linklab.DomainLogic.FilterLib do
       defoverridable filter_fields: 0
 
       @impl true
-      @spec filter_by(Ecto.Queryable.t(), FilterLib.filter() | list(FilterLib.filter())) :: Ecto.Queryable.t()
+      @spec filter_by(Ecto.Queryable.t(), FilterLib.filter() | list(FilterLib.filter())) ::
+              Ecto.Queryable.t()
       def filter_by(query, filters) when is_list(filters) do
         fields = filter_fields()
         FilterLib.__filter_builder__(query, filters, fields)
@@ -51,7 +54,8 @@ defmodule Linklab.DomainLogic.FilterLib do
       def filter_by(query, filter), do: filter_by(query, [filter])
 
       @impl true
-      @spec filter_clean(FilterLib.filter() | list(FilterLib.filter())) :: list(FilterLib.filter())
+      @spec filter_clean(FilterLib.filter() | list(FilterLib.filter())) ::
+              list(FilterLib.filter())
       def filter_clean(filters) when is_list(filters) do
         fields = filter_fields()
 
@@ -63,13 +67,15 @@ defmodule Linklab.DomainLogic.FilterLib do
       def filter_clean(filter), do: filter_clean([filter])
 
       @impl true
-      @spec filter_validate(FilterLib.filter() | list(FilterLib.filter())) :: {:ok, list(FilterLib.filter())} | {:error, String.t}
+      @spec filter_validate(FilterLib.filter() | list(FilterLib.filter())) ::
+              {:ok, list(FilterLib.filter())} | {:error, String.t()}
       def filter_validate(filters) when is_list(filters) do
         fields = filter_fields()
 
         case FilterLib.__filter_validator__([], filters, fields) do
           {:error, reason} ->
             {:error, "Invalid filter : #{reason}"}
+
           filters ->
             {:ok, Enum.reverse(filters)}
         end

@@ -6,7 +6,8 @@ defmodule Linklab.DomainLogic.Filter.FilterDatetimeTest do
   test "invalid operation" do
     [:lk, :in]
     |> Enum.each(fn operation ->
-      assert FilterDatetime.validate_value("2002:12:01", operation) == {:error, "Invalid operation : #{operation}"}
+      assert FilterDatetime.validate_value("2002:12:01", operation) ==
+               {:error, "Invalid operation : #{operation}"}
     end)
   end
 
@@ -32,7 +33,8 @@ defmodule Linklab.DomainLogic.Filter.FilterDatetimeTest do
     end
 
     test "invalid unix timestamp" do
-      assert FilterDatetime.validate_value(999_999_999_999, :gt) == {:error, "Invalid value for datetime"}
+      assert FilterDatetime.validate_value(999_999_999_999, :gt) ==
+               {:error, "Invalid value for datetime"}
     end
   end
 
