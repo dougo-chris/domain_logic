@@ -6,8 +6,8 @@ defmodule Linklab.DomainLogic.Filter.FilterDateTest do
   test "invalid operation" do
     [:lk, :in, :ni]
     |> Enum.each(fn operation ->
-      assert FilterDate.validate_value("2002:12:01", operation) ==
-               {:error, "Invalid operation : #{operation}"}
+      result = FilterDate.validate_value("2002:12:01", operation)
+      assert result == {:error, "Invalid operation : #{operation}"}
     end)
   end
 
