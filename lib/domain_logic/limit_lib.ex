@@ -18,7 +18,7 @@ defmodule Linklab.DomainLogic.LimitLib do
       @impl true
       @callback limit_by(Ecto.Queryable.t(), LimitLib.limit()) :: Ecto.Queryable.t()
       def limit_by(query, limit) do
-        Linklab.DomainLogic.LimitLib.__limit_builder__(query, limit)
+        LimitLib.__limit_builder__(query, limit)
       end
     end
   end

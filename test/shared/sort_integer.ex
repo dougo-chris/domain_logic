@@ -1,4 +1,6 @@
 defmodule Linklab.DomainLogic.Test.SortInteger do
+  @moduledoc false
+
   defmacro test_sort_by_integer(domain, table, model, field) do
     quote do
       test_sort_by_integer(unquote(domain), unquote(table), unquote(model), unquote(field), %{})

@@ -1,4 +1,6 @@
 defmodule Linklab.DomainLogic.Test.FilterBoolean do
+  @moduledoc false
+
   defmacro test_filter_by_boolean(domain, table, model, field) do
     quote do
       test_filter_by_boolean(unquote(domain), unquote(table), unquote(model), unquote(field), %{})
@@ -6,6 +8,7 @@ defmodule Linklab.DomainLogic.Test.FilterBoolean do
   end
 
   defmacro test_filter_by_boolean(domain, table, model, field, params) do
+    # credo:disable-for-next-line Credo.Check.Refactor.LongQuoteBlocks
     quote do
       field_type = unquote(domain).filter_fields()[unquote(field)]
       assert field_type == :boolean

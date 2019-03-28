@@ -11,8 +11,9 @@ defmodule Linklab.DomainLogic.DataCase do
   inside a transaction which is reset at the beginning
   of the test unless the test case is marked as async.
   """
-
   use ExUnit.CaseTemplate
+
+  alias Ecto.Adapters.SQL.Sandbox
 
   using do
     quote do
@@ -34,10 +35,10 @@ defmodule Linklab.DomainLogic.DataCase do
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Linklab.DomainLogic.Repo)
+    :ok = Sandbox.checkout(Linklab.DomainLogic.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Linklab.DomainLogic.Repo, {:shared, self()})
+      Sandbox.mode(Linklab.DomainLogic.Repo, {:shared, self()})
     end
 
     :ok

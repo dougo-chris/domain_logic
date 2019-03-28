@@ -29,10 +29,12 @@ defmodule Linklab.DomainLogic.Mixfile do
       {:scrivener_ecto, "~> 2.0"},
 
       # DEV AND TEST
-      {:mariaex, "~> 0.9", only: :test},
       {:dialyxir, "~> 0.5", only: :dev, runtime: false},
-      {:ex_machina, "~> 2.2", only: :test},
-      {:mix_test_watch, "~> 0.9", only: :dev, runtime: false}
+      {:credo, "~>1.0", only: :dev, runtime: false},
+      {:mix_test_watch, "~> 0.9", only: :dev, runtime: false},
+
+      {:mariaex, "~> 0.9", only: :test},
+      {:ex_machina, "~> 2.2", only: :test}
     ]
   end
 

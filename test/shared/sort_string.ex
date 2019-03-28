@@ -1,4 +1,6 @@
 defmodule Linklab.DomainLogic.Test.SortString do
+  @moduledoc false
+
   defmacro test_sort_by_string(domain, table, model, field) do
     quote do
       test_sort_by_string(unquote(domain), unquote(table), unquote(model), unquote(field), %{})

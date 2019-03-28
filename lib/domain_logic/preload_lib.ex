@@ -18,7 +18,7 @@ defmodule Linklab.DomainLogic.PreloadLib do
       @impl true
       @spec preload_with(Ecto.Queryable.t(), PreloadLib.preload()) :: Ecto.Queryable.t()
       def preload_with(query, associations) do
-        Linklab.DomainLogic.PreloadLib.__preload_builder__(query, associations)
+        PreloadLib.__preload_builder__(query, associations)
       end
     end
   end

@@ -7,6 +7,7 @@ defmodule Linklab.DomainLogic.Filter.FilterBoolean do
 
   def validate_value(nil, _op), do: {:ok, nil}
 
+  # credo:disable-for-next-line Credo.Check.Refactor.CyclomaticComplexity
   def validate_value(value, _op) do
     cond do
       is_boolean(value) -> {:ok, value}

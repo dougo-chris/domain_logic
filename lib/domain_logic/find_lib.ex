@@ -31,7 +31,7 @@ defmodule Linklab.DomainLogic.FindLib do
       """
       @impl true
       @spec repo() :: Ecto.Repo.t()
-      def repo(), do: @repo
+      def repo, do: @repo
 
       @doc """
       Fetch a Records by the query and field == value
@@ -77,7 +77,7 @@ defmodule Linklab.DomainLogic.FindLib do
       """
       @impl true
       @spec one() :: {:ok, Ecto.Schema.t()} | {:error, String.t()}
-      def one(), do: one(@table)
+      def one, do: one(@table)
 
       @doc """
       Fetch all Records by the query
@@ -93,7 +93,7 @@ defmodule Linklab.DomainLogic.FindLib do
       """
       @impl true
       @spec all() :: [Ecto.Schema.t()]
-      def all(), do: all(@table)
+      def all, do: all(@table)
 
       @doc """
       Fetch a page of Records by the query
@@ -125,7 +125,7 @@ defmodule Linklab.DomainLogic.FindLib do
       """
       @impl true
       @spec count() :: integer
-      def count(), do: count(@table)
+      def count, do: count(@table)
     end
   end
 end

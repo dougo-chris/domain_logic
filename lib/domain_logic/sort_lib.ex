@@ -28,7 +28,7 @@ defmodule Linklab.DomainLogic.SortLib do
       @spec sort_by(Ecto.Queryable.t(), SortLib.sort() | list(SortLib.sort())) :: Ecto.Queryable.t()
       def sort_by(query, sorts) when is_list(sorts) do
         fields = sort_fields()
-        Linklab.DomainLogic.SortLib.__sort_builder__(query, sorts, fields)
+        SortLib.__sort_builder__(query, sorts, fields)
       end
 
       def sort_by(query, sort), do: sort_by(query, [sort])
@@ -39,7 +39,7 @@ defmodule Linklab.DomainLogic.SortLib do
         fields = sort_fields()
 
         []
-        |> Linklab.DomainLogic.SortLib.__sort_cleaner__(sorts, fields)
+        |> SortLib.__sort_cleaner__(sorts, fields)
         |> Enum.reverse()
       end
 
@@ -50,7 +50,7 @@ defmodule Linklab.DomainLogic.SortLib do
       def sort_validate(sorts) when is_list(sorts) do
         fields = sort_fields()
 
-        case Linklab.DomainLogic.SortLib.__sort_validator__([], sorts, fields) do
+        case SortLib.__sort_validator__([], sorts, fields) do
           {:error, reason} ->
             {:error, "Invalid sort : #{reason}"}
           sorts ->

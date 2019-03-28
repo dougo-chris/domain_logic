@@ -14,12 +14,12 @@ defmodule Linklab.DomainLogic.FilterLib do
 
   import Ecto.Query
 
-  alias Linklab.DomainLogic.FilterLib
-  alias Linklab.DomainLogic.Filter.FilterString
-  alias Linklab.DomainLogic.Filter.FilterInteger
+  alias Linklab.DomainLogic.Filter.FilterBoolean
   alias Linklab.DomainLogic.Filter.FilterDate
   alias Linklab.DomainLogic.Filter.FilterDatetime
-  alias Linklab.DomainLogic.Filter.FilterBoolean
+  alias Linklab.DomainLogic.Filter.FilterInteger
+  alias Linklab.DomainLogic.Filter.FilterString
+  alias Linklab.DomainLogic.FilterLib
 
   @type filter_type :: :integer | :string
   @type filter_field :: {atom, filter_type}
@@ -45,7 +45,7 @@ defmodule Linklab.DomainLogic.FilterLib do
       @spec filter_by(Ecto.Queryable.t(), FilterLib.filter() | list(FilterLib.filter())) :: Ecto.Queryable.t()
       def filter_by(query, filters) when is_list(filters) do
         fields = filter_fields()
-        Linklab.DomainLogic.FilterLib.__filter_builder__(query, filters, fields)
+        FilterLib.__filter_builder__(query, filters, fields)
       end
 
       def filter_by(query, filter), do: filter_by(query, [filter])
@@ -56,7 +56,7 @@ defmodule Linklab.DomainLogic.FilterLib do
         fields = filter_fields()
 
         []
-        |> Linklab.DomainLogic.FilterLib.__filter_cleaner__(filters, fields)
+        |> FilterLib.__filter_cleaner__(filters, fields)
         |> Enum.reverse()
       end
 
@@ -67,7 +67,7 @@ defmodule Linklab.DomainLogic.FilterLib do
       def filter_validate(filters) when is_list(filters) do
         fields = filter_fields()
 
-        case Linklab.DomainLogic.FilterLib.__filter_validator__([], filters, fields) do
+        case FilterLib.__filter_validator__([], filters, fields) do
           {:error, reason} ->
             {:error, "Invalid filter : #{reason}"}
           filters ->
