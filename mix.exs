@@ -2,7 +2,7 @@ defmodule Linklab.DomainLogic.Mixfile do
   use Mix.Project
 
   @version "0.1.0"
-  @elixir_version "~> 1.7"
+  @elixir_version "~> 1.8"
 
   def project do
     [
@@ -11,10 +11,15 @@ defmodule Linklab.DomainLogic.Mixfile do
       elixir: @elixir_version,
       elixirc_paths: elixirc_paths(Mix.env()),
       deps: deps(),
+
       description: description(),
       package: package(),
+
       aliases: aliases(),
-      dialyzer: dialyzer()
+      dialyzer: dialyzer(),
+
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [coveralls: :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test]
     ]
   end
 
@@ -34,7 +39,8 @@ defmodule Linklab.DomainLogic.Mixfile do
       {:mix_test_watch, "~> 0.9", only: :dev, runtime: false},
 
       {:mariaex, "~> 0.9", only: :test},
-      {:ex_machina, "~> 2.2", only: :test}
+      {:ex_machina, "~> 2.2", only: :test},
+      {:excoveralls, "~> 0.11", only: :test}
     ]
   end
 
