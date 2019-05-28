@@ -13,4 +13,3 @@ config :linklab_domain_logic, Linklab.DomainLogic.Repo,
   hostname: "localhost",
   port: 3306,
   pool: Ecto.Adapters.SQL.Sandbox
-  
