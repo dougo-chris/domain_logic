@@ -23,8 +23,8 @@ defmodule Linklab.DomainLogic.Mixfile do
     ]
   end
 
-  defp elixirc_paths(:test), do: ["lib", "task", "priv", "test/support", "test/shared"]
-  defp elixirc_paths(_), do: ["lib", "task", "test/shared"]
+  defp elixirc_paths(:test), do: ["lib", "task", "priv", "test/support"]
+  defp elixirc_paths(_), do: ["lib", "task"]
 
   defp deps do
     [
