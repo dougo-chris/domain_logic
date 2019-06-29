@@ -3,10 +3,8 @@ defmodule Linklab.DomainLogic.FindLib do
 
   @callback repo() :: Ecto.Repo.t()
 
-  @callback find(Ecto.Queryable.t(), {atom(), any()} | list({atom(), any()})) ::
-              {:ok, Ecto.Schema.t()} | {:error, String.t()}
-  @callback find({atom(), any()} | list({atom(), any()})) ::
-              {:ok, Ecto.Schema.t()} | {:error, String.t()}
+  @callback find(Ecto.Queryable.t(), integer) :: {:ok, Ecto.Schema.t()} | {:error, String.t()}
+  @callback find(integer) :: {:ok, Ecto.Schema.t()} | {:error, String.t()}
 
   @callback one(Ecto.Queryable.t()) :: {:ok, Ecto.Schema.t()} | {:error, String.t()}
   @callback one() :: {:ok, Ecto.Schema.t()} | {:error, String.t()}
@@ -38,10 +36,9 @@ defmodule Linklab.DomainLogic.FindLib do
       Fetch a Records by the query and field == value
       """
       @impl true
-      @spec find(Ecto.Queryable.t(), {atom(), any()} | list({atom(), any()})) ::
-              {:ok, Ecto.Schema.t()} | {:error, String.t()}
-      def find(query, params) when is_list(params) do
-        case @repo.get_by(query, params) do
+      @spec find(Ecto.Queryable.t(), integer) :: {:ok, Ecto.Schema.t()} | {:error, String.t()}
+      def find(query, id) do
+        case @repo.get_by(query, id: id) do
           nil ->
             {:error, "Not found"}
 
@@ -50,15 +47,12 @@ defmodule Linklab.DomainLogic.FindLib do
         end
       end
 
-      def find(query, params), do: find(query, [params])
-
       @doc """
       Fetch a Records for the table by field == value
       """
       @impl true
-      @spec find({atom(), any()} | list({atom(), any()})) ::
-              {:ok, Ecto.Schema.t()} | {:error, String.t()}
-      def find(params), do: find(@table, params)
+      @spec find(integer) :: {:ok, Ecto.Schema.t()} | {:error, String.t()}
+      def find(id), do: find(@table, id)
 
       @doc """
       Fetch first Record by the query

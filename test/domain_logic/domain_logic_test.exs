@@ -7,12 +7,12 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
   describe "#find query" do
     test "it should be valid" do
       product = insert(:product)
-      {:ok, record} = ProductDomain.find(ProductTable, {:id, product.id})
+      {:ok, record} = ProductDomain.find(ProductTable, product.id)
       assert record.id == product.id
     end
 
     test "it should be invalid" do
-      {:error, reason} = ProductDomain.find(ProductTable, {:id, 1001})
+      {:error, reason} = ProductDomain.find(ProductTable, 1001)
       assert reason == "Not found"
     end
   end
@@ -20,12 +20,12 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
   describe "#find table" do
     test "it should be valid" do
       product = insert(:product)
-      {:ok, record} = ProductDomain.find({:id, product.id})
+      {:ok, record} = ProductDomain.find(product.id)
       assert record.id == product.id
     end
 
     test "it should be invalid" do
-      {:error, reason} = ProductDomain.find({:id, 1001})
+      {:error, reason} = ProductDomain.find(1001)
       assert reason == "Not found"
     end
   end
@@ -545,7 +545,7 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
       {:ok, record} =
         ProductTable
         |> ProductDomain.preload_with(:category)
-        |> ProductDomain.find({:id, product.id})
+        |> ProductDomain.find(product.id)
 
       assert record.category.id == category.id
     end
@@ -558,7 +558,7 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
       {:ok, record} =
         ProductTable
         |> ProductDomain.preload_with(:variants)
-        |> ProductDomain.find({:id, product.id})
+        |> ProductDomain.find(product.id)
 
       ids = Enum.map(record.variants, fn variant -> variant.id end)
       assert ids == [first.id, last.id]

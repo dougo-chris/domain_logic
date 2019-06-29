@@ -10,7 +10,8 @@ defmodule Linklab.DomainLogic.Test.FilterBoolean do
   defmacro test_filter_by_boolean(domain, table, model, field, params) do
     # credo:disable-for-next-line Credo.Check.Refactor.LongQuoteBlocks
     quote do
-      field_type = unquote(domain).filter_fields()[unquote(field)]
+      fields = unquote(domain).filter_fields()
+      {_, field_type, _} = Enum.find(fields, fn {name, _, _} -> name == unquote(field) end)
       assert field_type == :boolean
 
       ######################################
