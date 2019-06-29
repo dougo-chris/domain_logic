@@ -36,9 +36,9 @@ defmodule Linklab.DomainLogic.FindLib do
       Fetch a Records by the query and field == value
       """
       @impl true
-      @spec find(Ecto.Queryable.t(), integer) :: {:ok, Ecto.Schema.t()} | {:error, String.t()}
-      def find(query, id) do
-        case @repo.get_by(query, id: id) do
+      @spec find(Ecto.Queryable.t(), {atom, any} | integer) :: {:ok, Ecto.Schema.t()} | {:error, String.t()}
+      def find(query, {field, value}) do
+        case @repo.get_by(query, [{field, value}]) do
           nil ->
             {:error, "Not found"}
 
@@ -47,12 +47,14 @@ defmodule Linklab.DomainLogic.FindLib do
         end
       end
 
+      def find(query, id), do: find(query, {:id, id})
+
       @doc """
       Fetch a Records for the table by field == value
       """
       @impl true
-      @spec find(integer) :: {:ok, Ecto.Schema.t()} | {:error, String.t()}
-      def find(id), do: find(@table, id)
+      @spec find({atom, any} | integer) :: {:ok, Ecto.Schema.t()} | {:error, String.t()}
+      def find(param), do: find(@table, param)
 
       @doc """
       Fetch first Record by the query

@@ -15,6 +15,17 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
       {:error, reason} = ProductDomain.find(ProductTable, 1001)
       assert reason == "Not found"
     end
+
+    test "it should be valid with field" do
+      product = insert(:product)
+      {:ok, record} = ProductDomain.find(ProductTable, {:id, product.id})
+      assert record.id == product.id
+    end
+
+    test "it should be invalid with field" do
+      {:error, reason} = ProductDomain.find(ProductTable, {:id, 1001})
+      assert reason == "Not found"
+    end
   end
 
   describe "#find table" do
@@ -26,6 +37,17 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
 
     test "it should be invalid" do
       {:error, reason} = ProductDomain.find(1001)
+      assert reason == "Not found"
+    end
+
+    test "it should be valid with field" do
+      product = insert(:product)
+      {:ok, record} = ProductDomain.find({:id, product.id})
+      assert record.id == product.id
+    end
+
+    test "it should be invalid with field" do
+      {:error, reason} = ProductDomain.find({:id, 1001})
       assert reason == "Not found"
     end
   end
