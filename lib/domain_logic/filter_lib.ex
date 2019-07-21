@@ -205,47 +205,47 @@ defmodule Linklab.DomainLogic.FilterLib do
     from(q in query, where: field(q, ^name) == ^value)
   end
 
-  defp filter_builder_item(query, name, :gt, value, association) do
+  defp filter_builder_item(query, _name, :gt, value, [association, name]) do
     from(q in query, join: ac in assoc(q, ^association), where: field(ac, ^name) > ^value)
   end
 
-  defp filter_builder_item(query, name, :ge, value, association) do
+  defp filter_builder_item(query, _name, :ge, value, [association, name]) do
     from(q in query, join: ac in assoc(q, ^association), where: field(ac, ^name) >= ^value)
   end
 
-  defp filter_builder_item(query, name, :lt, value, association) do
+  defp filter_builder_item(query, _name, :lt, value, [association, name]) do
     from(q in query, join: ac in assoc(q, ^association), where: field(ac, ^name) < ^value)
   end
 
-  defp filter_builder_item(query, name, :le, value, association) do
+  defp filter_builder_item(query, _name, :le, value, [association, name]) do
     from(q in query, join: ac in assoc(q, ^association), where: field(ac, ^name) <= ^value)
   end
 
-  defp filter_builder_item(query, name, :lk, value, association) do
+  defp filter_builder_item(query, _name, :lk, value, [association, name]) do
     from(q in query, join: ac in assoc(q, ^association), where: like(field(ac, ^name), ^"%#{value}%"))
   end
 
-  defp filter_builder_item(query, name, :in, value, association) do
+  defp filter_builder_item(query, _name, :in, value, [association, name]) do
     from(q in query, join: ac in assoc(q, ^association), where: field(ac, ^name) in ^value)
   end
 
-  defp filter_builder_item(query, name, :ni, value, association) do
+  defp filter_builder_item(query, _name, :ni, value, [association, name]) do
     from(q in query, join: ac in assoc(q, ^association), where: field(ac, ^name) not in ^value)
   end
 
-  defp filter_builder_item(query, name, :ne, nil, association) do
+  defp filter_builder_item(query, _name, :ne, nil, [association, name]) do
     from(q in query, join: ac in assoc(q, ^association), where: not is_nil(field(ac, ^name)))
   end
 
-  defp filter_builder_item(query, name, :ne, value, association) do
+  defp filter_builder_item(query, _name, :ne, value, [association, name]) do
     from(q in query, join: ac in assoc(q, ^association), where: field(ac, ^name) != ^value)
   end
 
-  defp filter_builder_item(query, name, _op, nil, association) do
+  defp filter_builder_item(query, _name, _op, nil, [association, name]) do
     from(q in query, join: ac in assoc(q, ^association), where: is_nil(field(ac, ^name)))
   end
 
-  defp filter_builder_item(query, name, _op, value, association) do
+  defp filter_builder_item(query, _name, _op, value, [association, name]) do
     from(q in query, join: ac in assoc(q, ^association), where: field(ac, ^name) == ^value)
   end
 
