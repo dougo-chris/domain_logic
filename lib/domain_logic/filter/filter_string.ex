@@ -1,4 +1,4 @@
-defmodule Linklab.DomainLogic.Filter.FilterString do
+defmodule DomainLogic.Filter.FilterString do
   @moduledoc false
 
   def validate_value(nil, op) when op in [:in, :ni], do: {:ok, [nil]}

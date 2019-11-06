@@ -1,7 +1,7 @@
-defmodule Linklab.DomainLogic.Filter.FilterIntegerTest do
+defmodule DomainLogic.Filter.FilterIntegerTest do
   use ExUnit.Case
 
-  alias Linklab.DomainLogic.Filter.FilterInteger
+  alias DomainLogic.Filter.FilterInteger
 
   test "invalid operation" do
     [:lk]

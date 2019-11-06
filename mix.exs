@@ -1,4 +1,4 @@
-defmodule Linklab.DomainLogic.Mixfile do
+defmodule DomainLogic.Mixfile do
   use Mix.Project
 
   @version "0.1.0"
@@ -6,7 +6,7 @@ defmodule Linklab.DomainLogic.Mixfile do
 
   def project do
     [
-      app: :linklab_domain_logic,
+      app: :domain_logic,
       version: @version,
       elixir: @elixir_version,
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -29,11 +29,12 @@ defmodule Linklab.DomainLogic.Mixfile do
   defp deps do
     [
       # ECTO
-      {:ecto_sql, "~>  3.0"},
+      {:ecto_sql, "~>  3.2"},
       # PAGINATION
       {:scrivener_ecto, "~> 2.0"},
 
       # DEV AND TEST
+      {:myxql, "~> 0.2.0", only: [:dev, :test]},
       {:dialyxir, "~> 0.5", only: :dev, runtime: false},
       {:credo, "~>1.0", only: :dev, runtime: false},
       {:mix_test_watch, "~> 0.9", only: :dev, runtime: false},
@@ -54,7 +55,7 @@ defmodule Linklab.DomainLogic.Mixfile do
     [
       maintainers: ["Chris Douglas"],
       licenses: ["TODO"],
-      links: %{"Github" => "TODO"},
+      links: %{"Github" => "https://github.com/dougo-chris/domain_logic"},
       files: ~w(lib mix.exs README.md)
     ]
   end

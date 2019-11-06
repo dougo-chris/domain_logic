@@ -1,4 +1,4 @@
-defmodule Linklab.DomainLogic.FindLib do
+defmodule DomainLogic.FindLib do
   @moduledoc false
 
   @callback repo() :: Ecto.Repo.t()
@@ -20,7 +20,7 @@ defmodule Linklab.DomainLogic.FindLib do
 
   defmacro __using__(opts) do
     quote do
-      @behaviour Linklab.DomainLogic.FindLib
+      @behaviour DomainLogic.FindLib
 
       @repo unquote(opts[:repo])
       @table unquote(opts[:table])
@@ -114,9 +114,9 @@ defmodule Linklab.DomainLogic.FindLib do
       Count then Records by the query
       """
       @impl true
-      @spec count(Ecto.Queryable.t()) :: integer
-      def count(query) do
-        @repo.aggregate(query, :count, :id)
+      @spec count(Ecto.Queryable.t(), atom) :: integer
+      def count(query, field \\ :id) do
+        @repo.aggregate(query, :count, field)
       end
 
       @doc """

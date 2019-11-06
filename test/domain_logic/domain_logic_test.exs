@@ -1,8 +1,10 @@
-defmodule Linklab.DomainLogic.DomainLogicTest do
-  use Linklab.DomainLogic.DataCase
+defmodule DomainLogic.DomainLogicTest do
+  use DomainLogic.DataCase
 
-  alias Linklab.DomainLogic.Db.ProductDomain
-  alias Linklab.DomainLogic.Db.ProductTable
+  import Ecto.Query
+
+  alias DomainLogic.Db.ProductDomain
+  alias DomainLogic.Db.ProductTable
 
   describe "#find query" do
     test "it should be valid" do
@@ -330,16 +332,23 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
       insert(:product)
       assert ProductDomain.count() == 3
     end
+
+    test "it should count by any field" do
+      insert(:product, name: "one")
+      insert(:product, name: "one")
+      insert(:product, name: "one")
+
+      count =
+        ProductTable
+        |> select([p], p.name)
+        |> distinct(true)
+        |> ProductDomain.count(:name)
+
+      assert count == 1
+    end
   end
 
   describe "#filter_by" do
-    test "fields" do
-      test_filter_by_integer(ProductDomain, ProductTable, :product, :id)
-      test_filter_by_string(ProductDomain, ProductTable, :product, :name)
-      test_filter_by_integer(ProductDomain, ProductTable, :product, :price)
-      test_filter_by_boolean(ProductDomain, ProductTable, :product, :available)
-    end
-
     test "field eq nil" do
       p1 = insert(:product, name: nil)
       insert(:product, name: "test")
@@ -444,12 +453,6 @@ defmodule Linklab.DomainLogic.DomainLogicTest do
   end
 
   describe "#sort_by" do
-    test "fields" do
-      test_sort_by_integer(ProductDomain, ProductTable, :product, :id)
-      test_sort_by_string(ProductDomain, ProductTable, :product, :name)
-      test_sort_by_integer(ProductDomain, ProductTable, :product, :price)
-    end
-
     test "invalid field name" do
       assert_raise ArgumentError, ~r/Invalid field/, fn ->
         ProductDomain.sort_by(ProductTable, {:wrong, :asc})

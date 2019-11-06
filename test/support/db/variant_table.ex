@@ -1,4 +1,4 @@
-defmodule Linklab.DomainLogic.Db.VariantTable do
+defmodule DomainLogic.Db.VariantTable do
   @moduledoc false
 
   use Ecto.Schema
@@ -6,7 +6,7 @@ defmodule Linklab.DomainLogic.Db.VariantTable do
   schema "dl_variants" do
     field(:code, :string)
 
-    belongs_to(:product, Linklab.DomainLogic.Db.ProductTable, foreign_key: :product_id)
+    belongs_to(:product, DomainLogic.Db.ProductTable, foreign_key: :product_id)
 
     timestamps()
   end

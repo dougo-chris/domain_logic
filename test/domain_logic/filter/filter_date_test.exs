@@ -1,7 +1,7 @@
-defmodule Linklab.DomainLogic.Filter.FilterDateTest do
+defmodule DomainLogic.Filter.FilterDateTest do
   use ExUnit.Case
 
-  alias Linklab.DomainLogic.Filter.FilterDate
+  alias DomainLogic.Filter.FilterDate
 
   test "invalid operation" do
     [:lk, :in, :ni]

@@ -1,7 +1,7 @@
-defmodule Linklab.DomainLogic.Filter.FilterStringTest do
+defmodule DomainLogic.Filter.FilterStringTest do
   use ExUnit.Case
 
-  alias Linklab.DomainLogic.Filter.FilterString
+  alias DomainLogic.Filter.FilterString
 
   test "nil value" do
     assert FilterString.validate_value(nil, :gt) == {:ok, nil}

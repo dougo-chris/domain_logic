@@ -1,4 +1,4 @@
-defmodule Linklab.DomainLogic.Db.ProductTable do
+defmodule DomainLogic.Db.ProductTable do
   @moduledoc false
 
   use Ecto.Schema
@@ -8,8 +8,8 @@ defmodule Linklab.DomainLogic.Db.ProductTable do
     field(:price, :integer)
     field(:available, :boolean)
 
-    belongs_to(:category, Linklab.DomainLogic.Db.CategoryTable, foreign_key: :category_id)
-    has_many(:variants, Linklab.DomainLogic.Db.VariantTable, foreign_key: :product_id)
+    belongs_to(:category, DomainLogic.Db.CategoryTable, foreign_key: :category_id)
+    has_many(:variants, DomainLogic.Db.VariantTable, foreign_key: :product_id)
 
     timestamps()
   end

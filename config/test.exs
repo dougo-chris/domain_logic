@@ -2,10 +2,10 @@ use Mix.Config
 
 config :logger, :console, level: :error
 
-config :linklab_domain_logic, ecto_repos: [Linklab.DomainLogic.Repo]
+config :domain_logic, ecto_repos: [DomainLogic.Repo]
 
 # Configure your database
-config :linklab_domain_logic, Linklab.DomainLogic.Repo,
+config :domain_logic, DomainLogic.Repo,
   load_from_system_env: false,
   username: "root",
   password: "",

@@ -16,7 +16,6 @@ devop_command()
       ;;
 
     "build")
-      mix deps.update --all && \
       mix deps.get
       ;;
 
@@ -24,10 +23,6 @@ devop_command()
       mix deps.clean --unused && \
       mix deps.update --all && \
       mix deps.get
-      ;;
-
-    "dev")
-      mix linklab.api.todo.execute ReaderTodo
       ;;
 
     "iex")

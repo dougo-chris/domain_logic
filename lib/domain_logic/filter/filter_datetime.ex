@@ -1,4 +1,4 @@
-defmodule Linklab.DomainLogic.Filter.FilterDatetime do
+defmodule DomainLogic.Filter.FilterDatetime do
   @moduledoc false
 
   def validate_value(_value, op) when op not in [:gt, :ge, :lt, :le, :ne, :eq] do

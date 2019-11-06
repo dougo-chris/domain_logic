@@ -1,7 +1,7 @@
-defmodule Linklab.DomainLogic.Filter.FilterBooleanTest do
+defmodule DomainLogic.Filter.FilterBooleanTest do
   use ExUnit.Case
 
-  alias Linklab.DomainLogic.Filter.FilterBoolean
+  alias DomainLogic.Filter.FilterBoolean
 
   test "invalid operation" do
     [:gt, :ge, :lt, :le, :lk, :in, :ni]
