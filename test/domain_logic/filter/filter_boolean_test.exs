@@ -1,7 +1,7 @@
-defmodule DomainLogic.Filter.FilterBooleanTest do
+defmodule DomainLogic.DomainQuery.Filter.FilterBooleanTest do
   use ExUnit.Case
 
-  alias DomainLogic.Filter.FilterBoolean
+  alias DomainLogic.DomainQuery.Filter.FilterBoolean
 
   test "invalid operation" do
     [:gt, :ge, :lt, :le, :lk, :in, :ni]

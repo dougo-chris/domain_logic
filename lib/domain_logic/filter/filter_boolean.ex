@@ -1,4 +1,4 @@
-defmodule DomainLogic.Filter.FilterBoolean do
+defmodule DomainLogic.DomainQuery.Filter.FilterBoolean do
   @moduledoc false
 
   def validate_value(_value, op) when op not in [:ne, :eq] do

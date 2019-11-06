@@ -1,10 +1,10 @@
-defmodule DomainLogic.DomainLogicTest do
-  use DomainLogic.DataCase
+defmodule DomainLogic.DomainQueryTest do
+  use DomainLogic.DomainQuery.DataCase
 
   import Ecto.Query
 
-  alias DomainLogic.Db.ProductDomain
-  alias DomainLogic.Db.ProductTable
+  alias DomainLogic.Test.Db.ProductDomain
+  alias DomainLogic.Test.Db.ProductTable
 
   describe "#find query" do
     test "it should be valid" do

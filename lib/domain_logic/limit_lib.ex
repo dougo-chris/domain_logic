@@ -1,9 +1,9 @@
-defmodule DomainLogic.LimitLib do
+defmodule DomainLogic.DomainQuery.LimitLib do
   @moduledoc false
 
   import Ecto.Query
 
-  alias DomainLogic.LimitLib
+  alias DomainLogic.DomainQuery.LimitLib
 
   @type limit :: integer | {integer, integer}
 
@@ -11,9 +11,9 @@ defmodule DomainLogic.LimitLib do
 
   defmacro __using__(_opts) do
     quote do
-      import DomainLogic.LimitLib
+      import DomainLogic.DomainQuery.LimitLib
 
-      @behaviour DomainLogic.LimitLib
+      @behaviour DomainLogic.DomainQuery.LimitLib
 
       @impl true
       @callback limit_by(Ecto.Queryable.t(), LimitLib.limit()) :: Ecto.Queryable.t()

@@ -2,11 +2,10 @@ use Mix.Config
 
 config :logger, :console, level: :error
 
-config :domain_logic, ecto_repos: [DomainLogic.Repo]
+config :domain_logic, ecto_repos: [DomainLogic.Test.Repo]
 
 # Configure your database
-config :domain_logic, DomainLogic.Repo,
-  load_from_system_env: false,
+config :domain_logic, DomainLogic.Test.Repo,
   username: "root",
   password: "",
   database: "domain_logic_test",

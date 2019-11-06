@@ -1,9 +1,9 @@
-defmodule DomainLogic.SortLib do
+defmodule DomainLogic.DomainQuery.SortLib do
   @moduledoc false
 
   import Ecto.Query
 
-  alias DomainLogic.SortLib
+  alias DomainLogic.DomainQuery.SortLib
 
   @type sort_field :: {atom, true}
   @type sort :: {atom | String.t(), :asc | :desc | String.t()}
@@ -15,9 +15,9 @@ defmodule DomainLogic.SortLib do
 
   defmacro __using__(_opts) do
     quote do
-      import DomainLogic.SortLib
+      import DomainLogic.DomainQuery.SortLib
 
-      @behaviour DomainLogic.SortLib
+      @behaviour DomainLogic.DomainQuery.SortLib
 
       @impl true
       @spec sort_fields() :: list(SortLib.sort_field())

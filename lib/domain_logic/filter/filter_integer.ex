@@ -1,4 +1,4 @@
-defmodule DomainLogic.Filter.FilterInteger do
+defmodule DomainLogic.DomainQuery.Filter.FilterInteger do
   @moduledoc false
 
   def validate_value(_value, op) when op in [:lk] do

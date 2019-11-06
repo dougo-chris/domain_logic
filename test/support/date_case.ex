@@ -1,4 +1,4 @@
-defmodule DomainLogic.DataCase do
+defmodule DomainLogic.DomainQuery.DataCase do
   @moduledoc """
   This module defines the setup for tests requiring
   access to the application's data layer.
@@ -17,23 +17,23 @@ defmodule DomainLogic.DataCase do
 
   using do
     quote do
-      alias DomainLogic.Repo
+      alias DomainLogic.Test.Repo
 
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
 
-      import DomainLogic.Factory
+      import DomainLogic.DomainQuery.Factory
 
-      import DomainLogic.DataCase
+      import DomainLogic.DomainQuery.DataCase
     end
   end
 
   setup tags do
-    :ok = Sandbox.checkout(DomainLogic.Repo)
+    :ok = Sandbox.checkout(DomainLogic.Test.Repo)
 
     unless tags[:async] do
-      Sandbox.mode(DomainLogic.Repo, {:shared, self()})
+      Sandbox.mode(DomainLogic.Test.Repo, {:shared, self()})
     end
 
     :ok

@@ -1,7 +1,7 @@
-defmodule DomainLogic.Filter.FilterIntegerTest do
+defmodule DomainLogic.DomainQuery.Filter.FilterIntegerTest do
   use ExUnit.Case
 
-  alias DomainLogic.Filter.FilterInteger
+  alias DomainLogic.DomainQuery.Filter.FilterInteger
 
   test "invalid operation" do
     [:lk]

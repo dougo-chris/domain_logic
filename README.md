@@ -6,7 +6,7 @@ and the logic for accessing a domain made up of a table or group of tables.
 ## Usage
 Given an Ecto Table definitions
 ```
-  defmodule DomainLogic.Db.ProductTable do
+  defmodule MyApp.Db.ProductTable do
     @moduledoc false
 
     use Ecto.Schema
@@ -16,20 +16,20 @@ Given an Ecto Table definitions
       field(:price, :integer)
       field(:available, :boolean)
 
-      belongs_to(:category, DomainLogic.Db.CategoryTable, foreign_key: :category_id)
-      has_many(:variants, DomainLogic.Db.VariantTable, foreign_key: :product_id)
+      belongs_to(:category, MyApp.Db.CategoryTable, foreign_key: :category_id)
+      has_many(:variants, MyApp.Db.VariantTable, foreign_key: :product_id)
     end
   end
 ```
 
 Create a domain definition to access the table
 ```
-  defmodule DomainLogic.Db.ProductDomain do
+  defmodule MyApp.Db.ProductDomain do
     @moduledoc false
 
-    use DomainLogic,
-      repo: DomainLogic.Repo,
-      table: DomainLogic.Db.ProductTable
+    use DomainLogic.DomainQuery,
+      repo: MyApp.Repo,
+      table: MyApp.Db.ProductTable
 
     register_filter do
       filter(:id, :integer)
@@ -49,8 +49,8 @@ Create a domain definition to access the table
 Now we can access the data with with finds, filters, sorts, preloading, pagination, count & all
 
 ```
-alias DomainLogic.Db.ProductTable
-alias DomainLogic.Db.ProductDomain
+alias MyApp.Db.ProductTable
+alias MyApp.Db.ProductDomain
 
 products =
   ProductTable
@@ -63,7 +63,7 @@ products =
 ### Find by value
 Note : If there are more than one record an exception is raised
 ```
-{:ok, product} = ProductDomain.find(ProductTable, {:category_id, 1001})
+{:ok, product} = ProductDomain.find({:category_id, 1001})
 ```
 
 ### Get one record
@@ -81,12 +81,12 @@ products = ProductDomain.all(ProductTable)
 We use the scriviner from [https://github.com/drewolson/scrivener_ecto]
 
 ```
-products = ProductDomain.paginate(ProductTable, {page, page_size})
+products = ProductDomain.paginate({page, page_size})
 ```
 
 ### Counting the records
 ```
-counter = ProductDomain.count(ProductTable)
+counter = ProductDomain.count()
 ```
 
 ### Filtering
@@ -163,7 +163,7 @@ import Ecto.Query
 
 products =
   ProductTable
-  |> join(:inner, [i], d in Device, on i.category_id == d.id)
+  |> join(:inner, [p], c in CategoryTable, on p.category_id == c.id)
   |> ProductDomain.all()
 ```
 
@@ -196,7 +196,7 @@ Return a cleaned sort list
 ```
 
 ## Coverting Query Params to Queries
-DomainLogic.DomainParams will convert parameters (like in a API request) into valid query commands
+DomainLogic.DomainQuery.DomainParams will convert parameters (like in a API request) into valid query commands
 ```
   def index(conn, params) do
     category = conn.assigns[:current_category]

@@ -1,4 +1,4 @@
-defmodule DomainLogic.FindLib do
+defmodule DomainLogic.DomainQuery.FindLib do
   @moduledoc false
 
   @callback repo() :: Ecto.Repo.t()
@@ -20,7 +20,7 @@ defmodule DomainLogic.FindLib do
 
   defmacro __using__(opts) do
     quote do
-      @behaviour DomainLogic.FindLib
+      @behaviour DomainLogic.DomainQuery.FindLib
 
       @repo unquote(opts[:repo])
       @table unquote(opts[:table])

@@ -1,8 +1,8 @@
 defmodule DomainLogic.DomainParams do
   @moduledoc false
 
-  alias DomainLogic.FilterLib
-  alias DomainLogic.SortLib
+  alias DomainLogic.DomainQuery.FilterLib
+  alias DomainLogic.DomainQuery.SortLib
 
   ############################################################
   ## PAGINATION_PARAMS

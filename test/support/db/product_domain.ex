@@ -1,9 +1,9 @@
-defmodule DomainLogic.Db.ProductDomain do
+defmodule DomainLogic.Test.Db.ProductDomain do
   @moduledoc false
 
-  use DomainLogic,
-    repo: DomainLogic.Repo,
-    table: DomainLogic.Db.ProductTable
+  use DomainLogic.DomainQuery,
+    repo: DomainLogic.Test.Repo,
+    table: DomainLogic.Test.Db.ProductTable
 
   register_filter do
     filter(:id, :integer)
