@@ -1,9 +1,9 @@
-defmodule DomainLogic.DomainQuery.PreloadLib do
+defmodule DomainLogic.Domain.PreloadLib do
   @moduledoc false
 
   import Ecto.Query
 
-  alias DomainLogic.DomainQuery.PreloadLib
+  alias DomainLogic.Domain.PreloadLib
 
   @type preload :: atom() | list(atom()) | keyword()
 
@@ -11,9 +11,9 @@ defmodule DomainLogic.DomainQuery.PreloadLib do
 
   defmacro __using__(_opts) do
     quote do
-      import DomainLogic.DomainQuery.PreloadLib
+      import DomainLogic.Domain.PreloadLib
 
-      @behaviour DomainLogic.DomainQuery.PreloadLib
+      @behaviour DomainLogic.Domain.PreloadLib
 
       @impl true
       @spec preload_with(Ecto.Queryable.t(), PreloadLib.preload()) :: Ecto.Queryable.t()

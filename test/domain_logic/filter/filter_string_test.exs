@@ -1,7 +1,7 @@
-defmodule DomainLogic.DomainQuery.Filter.FilterStringTest do
+defmodule DomainLogic.Domain.Filter.FilterStringTest do
   use ExUnit.Case
 
-  alias DomainLogic.DomainQuery.Filter.FilterString
+  alias DomainLogic.Domain.Filter.FilterString
 
   test "nil value" do
     assert FilterString.validate_value(nil, :gt) == {:ok, nil}

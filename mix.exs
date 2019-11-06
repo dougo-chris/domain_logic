@@ -1,4 +1,4 @@
-defmodule DomainLogic.DomainQuery.Mixfile do
+defmodule DomainLogic.Domain.Mixfile do
   use Mix.Project
 
   @version "0.1.0"

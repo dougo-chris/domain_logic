@@ -1,7 +1,7 @@
 defmodule DomainLogic.Test.Db.ProductDomain do
   @moduledoc false
 
-  use DomainLogic.DomainQuery,
+  use DomainLogic.Domain,
     repo: DomainLogic.Test.Repo,
     table: DomainLogic.Test.Db.ProductTable
 

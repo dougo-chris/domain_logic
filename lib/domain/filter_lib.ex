@@ -1,4 +1,4 @@
-defmodule DomainLogic.DomainQuery.FilterLib do
+defmodule DomainLogic.Domain.FilterLib do
   @moduledoc """
     Functions and macros for filtering data
 
@@ -14,12 +14,12 @@ defmodule DomainLogic.DomainQuery.FilterLib do
 
   import Ecto.Query
 
-  alias DomainLogic.DomainQuery.Filter.FilterBoolean
-  alias DomainLogic.DomainQuery.Filter.FilterDate
-  alias DomainLogic.DomainQuery.Filter.FilterDatetime
-  alias DomainLogic.DomainQuery.Filter.FilterInteger
-  alias DomainLogic.DomainQuery.Filter.FilterString
-  alias DomainLogic.DomainQuery.FilterLib
+  alias DomainLogic.Domain.Filter.FilterBoolean
+  alias DomainLogic.Domain.Filter.FilterDate
+  alias DomainLogic.Domain.Filter.FilterDatetime
+  alias DomainLogic.Domain.Filter.FilterInteger
+  alias DomainLogic.Domain.Filter.FilterString
+  alias DomainLogic.Domain.FilterLib
 
   @type filter_type :: :integer | :string
   @type filter_field :: {atom, filter_type}
@@ -34,9 +34,9 @@ defmodule DomainLogic.DomainQuery.FilterLib do
 
   defmacro __using__(_opts) do
     quote do
-      import DomainLogic.DomainQuery.FilterLib
+      import DomainLogic.Domain.FilterLib
 
-      @behaviour DomainLogic.DomainQuery.FilterLib
+      @behaviour DomainLogic.Domain.FilterLib
 
       @impl true
       @spec filter_fields() :: list(FilterLib.filter_field())

@@ -1,4 +1,4 @@
-defmodule DomainLogic.DomainQuery.DataCase do
+defmodule DomainLogic.Domain.DataCase do
   @moduledoc """
   This module defines the setup for tests requiring
   access to the application's data layer.
@@ -23,9 +23,9 @@ defmodule DomainLogic.DomainQuery.DataCase do
       import Ecto.Changeset
       import Ecto.Query
 
-      import DomainLogic.DomainQuery.Factory
+      import DomainLogic.Domain.Factory
 
-      import DomainLogic.DomainQuery.DataCase
+      import DomainLogic.Domain.DataCase
     end
   end
 

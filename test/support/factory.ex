@@ -1,4 +1,4 @@
-defmodule DomainLogic.DomainQuery.Factory do
+defmodule DomainLogic.Domain.Factory do
   @moduledoc false
 
   # with Ecto

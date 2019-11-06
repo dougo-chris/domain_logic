@@ -27,7 +27,7 @@ Create a domain definition to access the table
   defmodule MyApp.Db.ProductDomain do
     @moduledoc false
 
-    use DomainLogic.DomainQuery,
+    use DomainLogic.Domain,
       repo: MyApp.Repo,
       table: MyApp.Db.ProductTable
 
@@ -196,14 +196,14 @@ Return a cleaned sort list
 ```
 
 ## Coverting Query Params to Queries
-DomainLogic.DomainQuery.DomainParams will convert parameters (like in a API request) into valid query commands
+DomainLogic.Domain.Params will convert parameters (like in a API request) into valid query commands
 ```
   def index(conn, params) do
     category = conn.assigns[:current_category]
 
-    filters = DomainParams.filter(params, &ProductDomain.filter_clean/1)
-    sorts = DomainParams.sort(params, &ProductDomain.sort_clean/1)
-    pagination = DomainParams.pagination(params)
+    filters = Params.filter(params, &ProductDomain.filter_clean/1)
+    sorts = Params.sort(params, &ProductDomain.sort_clean/1)
+    pagination = Params.pagination(params)
 
     products =
       ProductTable

@@ -1,5 +1,5 @@
-defmodule DomainLogic.DomainQueryTest do
-  use DomainLogic.DomainQuery.DataCase
+defmodule DomainLogic.DomainTest do
+  use DomainLogic.Domain.DataCase
 
   import Ecto.Query
 

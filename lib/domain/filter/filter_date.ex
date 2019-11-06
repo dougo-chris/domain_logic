@@ -1,4 +1,4 @@
-defmodule DomainLogic.DomainQuery.Filter.FilterDate do
+defmodule DomainLogic.Domain.Filter.FilterDate do
   @moduledoc false
 
   def validate_value(_value, op) when op not in [:gt, :ge, :lt, :le, :ne, :eq] do

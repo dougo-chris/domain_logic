@@ -1,7 +1,7 @@
-defmodule DomainLogic.DomainQuery.Filter.FilterDateTest do
+defmodule DomainLogic.Domain.Filter.FilterDateTest do
   use ExUnit.Case
 
-  alias DomainLogic.DomainQuery.Filter.FilterDate
+  alias DomainLogic.Domain.Filter.FilterDate
 
   test "invalid operation" do
     [:lk, :in, :ni]
