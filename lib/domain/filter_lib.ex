@@ -4,7 +4,7 @@ defmodule DomainLogic.Domain.FilterLib do
 
     Filters are structured as {field, op, value}
     - field is the field in the **register_filter**
-    - operation in :gt, :ge, :lt, :le, :lk, :in, :ni, :ne, :eq
+    - operation in :gt, :ge, :lt, :le, :lk, :in, :ne, :eq
 
     ## Examples
 
@@ -23,14 +23,12 @@ defmodule DomainLogic.Domain.FilterLib do
 
   @type filter_type :: :integer | :string
   @type filter_field :: {atom, filter_type}
-  @type filter ::
-          {atom | String.t(), :gt | :ge | :lt | :le | :lk | :in | :ni | :ne | :eq | String.t(),
-           any()}
+  @type filter :: {atom | String.t(), :gt | :ge | :lt | :le | :lk | :in | :ne | :eq | String.t(), any()}
 
   @callback filter_fields() :: list(filter_field)
   @callback filter_by(Ecto.Schema.t(), filter | list(filter)) :: Ecto.Queryable.t()
-  @callback filter_clean(filter | list(filter)) :: list(filter)
   @callback filter_validate(filter | list(filter)) :: {:ok, list(filter)} | {:error, String.t()}
+  @callback filter_clean(filter | list(filter)) :: list(filter)
 
   defmacro __using__(_opts) do
     quote do
@@ -44,27 +42,13 @@ defmodule DomainLogic.Domain.FilterLib do
       defoverridable filter_fields: 0
 
       @impl true
-      @spec filter_by(Ecto.Queryable.t(), FilterLib.filter() | list(FilterLib.filter())) ::
-              Ecto.Queryable.t()
+      @spec filter_by(Ecto.Queryable.t(), FilterLib.filter() | list(FilterLib.filter())) :: Ecto.Queryable.t()
       def filter_by(query, filters) when is_list(filters) do
         fields = filter_fields()
         FilterLib.__filter_builder__(query, filters, fields)
       end
 
       def filter_by(query, filter), do: filter_by(query, [filter])
-
-      @impl true
-      @spec filter_clean(FilterLib.filter() | list(FilterLib.filter())) ::
-              list(FilterLib.filter())
-      def filter_clean(filters) when is_list(filters) do
-        fields = filter_fields()
-
-        []
-        |> FilterLib.__filter_cleaner__(filters, fields)
-        |> Enum.reverse()
-      end
-
-      def filter_clean(filter), do: filter_clean([filter])
 
       @impl true
       @spec filter_validate(FilterLib.filter() | list(FilterLib.filter())) ::
@@ -81,7 +65,19 @@ defmodule DomainLogic.Domain.FilterLib do
         end
       end
 
-      def filter_validate(filter), do: filter_clean([filter])
+      def filter_validate(filter), do: filter_validate([filter])
+
+      @impl true
+      @spec filter_clean(FilterLib.filter() | list(FilterLib.filter())) :: list(FilterLib.filter())
+      def filter_clean(filters) when is_list(filters) do
+        fields = filter_fields()
+
+        []
+        |> FilterLib.__filter_cleaner__(filters, fields)
+        |> Enum.reverse()
+      end
+
+      def filter_clean(filter), do: filter_clean([filter])
     end
   end
 
@@ -105,10 +101,21 @@ defmodule DomainLogic.Domain.FilterLib do
   @doc """
   Define the filter_by field
   """
-  @spec filter(atom, FilterLib.filter_type(), list) :: any()
-  defmacro filter(name, type, options \\ []) do
+  @spec filter(atom, FilterLib.filter_type()) :: any()
+  defmacro filter(name, field_type, options \\ []) do
     quote do
-      Module.put_attribute(__MODULE__, :filter_fields, {unquote(name), unquote(type), unquote(options)})
+      Module.put_attribute(
+        __MODULE__,
+        :filter_fields,
+        {
+          unquote(name),
+          {
+            Keyword.get(unquote(options), :source, unquote(name)),
+            unquote(field_type),
+            Keyword.get(unquote(options), :association)
+          }
+        }
+      )
     end
   end
 
@@ -116,11 +123,11 @@ defmodule DomainLogic.Domain.FilterLib do
   def __filter_builder__(query, [], _fields), do: query
 
   def __filter_builder__(query, [{name, op, value} | tail], fields) do
-    with {:ok, {name, type, options}} <- validate_field(fields, name),
-         {:ok, op} <- validate_field_op(op, type),
-         {:ok, value} <- validate_field_value(value, type, op) do
+    with {:ok, {field_name, field_type, field_association}} <- validate_field_name(fields, name),
+         {:ok, field_op} <- validate_field_op(op, field_type),
+         {:ok, field_value} <- validate_field_value(field_type, field_op, value) do
       query
-      |> filter_builder_item(name, op, value, options[:association])
+      |> filter_builder_item(field_name, field_op, field_value, field_association)
       |> __filter_builder__(tail, fields)
     else
       {:error, reason} ->
@@ -129,12 +136,30 @@ defmodule DomainLogic.Domain.FilterLib do
   end
 
   @doc false
+  def __filter_validator__(acc, [], _fields), do: acc
+
+  def __filter_validator__(acc, [{name, op, value} | tail], fields) do
+    with {:ok, {_field_name, field_type, _field_association}} <- validate_field_name(fields, name),
+         {:ok, field_op} <- validate_field_op(op, field_type),
+         {:ok, _field_value} <- validate_field_value(field_type, field_op, value) do
+      __filter_validator__([{name, op, value} | acc], tail, fields)
+    else
+      error ->
+        error
+    end
+  end
+
+  def __filter_validator__(_acc, _filters, _fields) do
+    {:error, "Invalid filter format"}
+  end
+
+  @doc false
   def __filter_cleaner__(acc, [], _fields), do: acc
 
   def __filter_cleaner__(acc, [{name, op, value} | tail], fields) do
-    with {:ok, {name, type, _}} <- validate_field(fields, name),
-         {:ok, op} <- validate_field_op(op, type),
-         {:ok, value} <- validate_field_value(value, type, op) do
+    with {:ok, {_field_name, field_type, _field_association}} <- validate_field_name(fields, name),
+         {:ok, field_op} <- validate_field_op(op, field_type),
+         {:ok, _field_value} <- validate_field_value(field_type, field_op, value) do
       __filter_cleaner__([{name, op, value} | acc], tail, fields)
     else
       {:error, _reason} ->
@@ -144,21 +169,6 @@ defmodule DomainLogic.Domain.FilterLib do
 
   def __filter_cleaner__(acc, [_ | tail], fields) do
     __filter_cleaner__(acc, tail, fields)
-  end
-
-  @doc false
-  def __filter_validator__(acc, [], _fields), do: acc
-
-  def __filter_validator__(acc, [{name, op, value} | tail], fields) do
-    with {:ok, {name, type, _}} <- validate_field(fields, name),
-         {:ok, op} <- validate_field_op(op, type),
-         {:ok, value} <- validate_field_value(value, type, op) do
-      __filter_validator__([{name, op, value} | acc], tail, fields)
-    end
-  end
-
-  def __filter_validator__(_acc, _filter, _fields) do
-    {:error, "Invalid format"}
   end
 
   defp filter_builder_item(query, name, :gt, value, nil) do
@@ -185,72 +195,48 @@ defmodule DomainLogic.Domain.FilterLib do
     from(q in query, where: field(q, ^name) in ^value)
   end
 
-  defp filter_builder_item(query, name, :ni, value, nil) do
-    from(q in query, where: field(q, ^name) not in ^value)
-  end
-
-  defp filter_builder_item(query, name, :ne, nil, nil) do
-    from(q in query, where: not is_nil(field(q, ^name)))
-  end
-
   defp filter_builder_item(query, name, :ne, value, nil) do
     from(q in query, where: field(q, ^name) != ^value)
-  end
-
-  defp filter_builder_item(query, name, _op, nil, nil) do
-    from(q in query, where: is_nil(field(q, ^name)))
   end
 
   defp filter_builder_item(query, name, _op, value, nil) do
     from(q in query, where: field(q, ^name) == ^value)
   end
 
-  defp filter_builder_item(query, _name, :gt, value, [association, name]) do
-    from(q in query, join: ac in assoc(q, ^association), where: field(ac, ^name) > ^value)
+  defp filter_builder_item(query, name, :gt, value, association) do
+    from(q in query, join: as in assoc(q, ^association), where: field(as, ^name) > ^value)
   end
 
-  defp filter_builder_item(query, _name, :ge, value, [association, name]) do
-    from(q in query, join: ac in assoc(q, ^association), where: field(ac, ^name) >= ^value)
+  defp filter_builder_item(query, name, :ge, value, association) do
+    from(q in query, join: as in assoc(q, ^association), where: field(as, ^name) >= ^value)
   end
 
-  defp filter_builder_item(query, _name, :lt, value, [association, name]) do
-    from(q in query, join: ac in assoc(q, ^association), where: field(ac, ^name) < ^value)
+  defp filter_builder_item(query, name, :lt, value, association) do
+    from(q in query, join: as in assoc(q, ^association), where: field(as, ^name) < ^value)
   end
 
-  defp filter_builder_item(query, _name, :le, value, [association, name]) do
-    from(q in query, join: ac in assoc(q, ^association), where: field(ac, ^name) <= ^value)
+  defp filter_builder_item(query, name, :le, value, association) do
+    from(q in query, join: as in assoc(q, ^association), where: field(as, ^name) <= ^value)
   end
 
-  defp filter_builder_item(query, _name, :lk, value, [association, name]) do
-    from(q in query, join: ac in assoc(q, ^association), where: like(field(ac, ^name), ^"%#{value}%"))
+  defp filter_builder_item(query, name, :lk, value, association) do
+    from(q in query, join: as in assoc(q, ^association), where: like(field(as, ^name), ^"%#{value}%"))
   end
 
-  defp filter_builder_item(query, _name, :in, value, [association, name]) do
-    from(q in query, join: ac in assoc(q, ^association), where: field(ac, ^name) in ^value)
+  defp filter_builder_item(query, name, :in, value, association) do
+    from(q in query, join: as in assoc(q, ^association), where: field(as, ^name) in ^value)
   end
 
-  defp filter_builder_item(query, _name, :ni, value, [association, name]) do
-    from(q in query, join: ac in assoc(q, ^association), where: field(ac, ^name) not in ^value)
+  defp filter_builder_item(query, name, :ne, value, association) do
+    from(q in query, join: as in assoc(q, ^association), where: field(as, ^name) != ^value)
   end
 
-  defp filter_builder_item(query, _name, :ne, nil, [association, name]) do
-    from(q in query, join: ac in assoc(q, ^association), where: not is_nil(field(ac, ^name)))
+  defp filter_builder_item(query, name, _, value, association) do
+    from(q in query, join: as in assoc(q, ^association), where: field(as, ^name) == ^value)
   end
 
-  defp filter_builder_item(query, _name, :ne, value, [association, name]) do
-    from(q in query, join: ac in assoc(q, ^association), where: field(ac, ^name) != ^value)
-  end
-
-  defp filter_builder_item(query, _name, _op, nil, [association, name]) do
-    from(q in query, join: ac in assoc(q, ^association), where: is_nil(field(ac, ^name)))
-  end
-
-  defp filter_builder_item(query, _name, _op, value, [association, name]) do
-    from(q in query, join: ac in assoc(q, ^association), where: field(ac, ^name) == ^value)
-  end
-
-  defp validate_field(fields, name) when is_atom(name) do
-    case Enum.find(fields, fn {field, _, _} -> field == name end) do
+  defp validate_field_name(fields, name) when is_atom(name) do
+    case Keyword.get(fields, name) do
       nil ->
         {:error, "Invalid field : #{name}"}
 
@@ -259,12 +245,12 @@ defmodule DomainLogic.Domain.FilterLib do
     end
   end
 
-  defp validate_field(fields, name) do
-    case Enum.find(fields, fn {field, _, _} -> "#{field}" == name end) do
+  defp validate_field_name(fields, name) do
+    case Enum.find(fields, fn {field, _} -> "#{field}" == name end) do
       nil ->
-        {:error, "Invalid field : #{name}"}
+        {:error, "Invalid filter field : #{name}"}
 
-      field ->
+      {_, field} ->
         {:ok, field}
     end
   end
@@ -298,7 +284,7 @@ defmodule DomainLogic.Domain.FilterLib do
   end
 
   # STRING
-  defp validate_field_value(value, type, op) do
+  defp validate_field_value(type, op, value) do
     case type do
       :string ->
         FilterString.validate_value(value, op)
@@ -316,7 +302,7 @@ defmodule DomainLogic.Domain.FilterLib do
         FilterDatetime.validate_value(value, op)
 
       _ ->
-        {:error, "Invalid filter type"}
+        {:error, "Invalid filter type : #{type}"}
     end
   end
 end

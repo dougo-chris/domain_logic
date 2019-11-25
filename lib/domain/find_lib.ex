@@ -2,6 +2,7 @@ defmodule DomainLogic.Domain.FindLib do
   @moduledoc false
 
   @callback repo() :: Ecto.Repo.t()
+  @callback table() :: Ecto.Queryable.t()
 
   @callback find(Ecto.Queryable.t(), integer) :: {:ok, Ecto.Schema.t()} | {:error, String.t()}
   @callback find(integer) :: {:ok, Ecto.Schema.t()} | {:error, String.t()}
@@ -31,6 +32,13 @@ defmodule DomainLogic.Domain.FindLib do
       @impl true
       @spec repo() :: Ecto.Repo.t()
       def repo, do: @repo
+
+      @doc """
+      Table used by the domain
+      """
+      @impl true
+      @spec table() :: Ecto.Queryable.t()
+      def table, do: @table
 
       @doc """
       Fetch a Records by the query and field == value

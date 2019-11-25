@@ -349,28 +349,8 @@ defmodule DomainLogic.DomainTest do
   end
 
   describe "#filter_by" do
-    test "field eq nil" do
-      p1 = insert(:product, name: nil)
-      insert(:product, name: "test")
-
-      [result] =
-        ProductTable
-        |> ProductDomain.filter_by({:name, :eq, nil})
-        |> ProductDomain.repo().all()
-
-      assert result.id == p1.id
-    end
-
-    test "field ne nil" do
-      insert(:product, name: nil)
-      p1 = insert(:product, name: "test")
-
-      [result] =
-        ProductTable
-        |> ProductDomain.filter_by({:name, :ne, nil})
-        |> ProductDomain.repo().all()
-
-      assert result.id == p1.id
+    test "fields" do
+      validate_filter_fields(ProductDomain)
     end
 
     test "invalid field name" do
@@ -385,10 +365,264 @@ defmodule DomainLogic.DomainTest do
       end
     end
 
-    test "invalid field value" do
-      assert_raise ArgumentError, ~r/Invalid value/, fn ->
-        ProductDomain.filter_by(ProductTable, {:id, :eq, ~r/bill/})
-      end
+    test "eq" do
+      insert(:product, name: "AVALUE")
+      insert(:product, name: "VALUE")
+      insert(:product, name: "VALUEZ")
+
+      op = [{:name, :eq, "VALUE"}]
+
+      results =
+        ProductTable
+        |> ProductDomain.filter_by(op)
+        |> ProductDomain.all()
+        |> Enum.map(fn result -> Map.get(result, :name) end)
+
+      assert results == ["VALUE"]
+    end
+
+    test "eq by association" do
+      insert(:product, name: "1", category: insert(:category, title: "AVALUE"))
+      insert(:product, name: "2", category: insert(:category, title: "VALUE"))
+      insert(:product, name: "3", category: insert(:category, title: "VALUEZ"))
+
+      op = [{:category_title, :eq, "VALUE"}]
+
+      results =
+        ProductTable
+        |> ProductDomain.filter_by(op)
+        |> ProductDomain.all()
+        |> Enum.map(fn result -> Map.get(result, :name) end)
+
+      assert results == ["2"]
+    end
+
+    test "ne" do
+      insert(:product, name: "AVALUE")
+      insert(:product, name: "VALUE")
+      insert(:product, name: "VALUEZ")
+
+      op = [{:name, :ne, "VALUE"}]
+
+      results =
+        ProductTable
+        |> ProductDomain.filter_by(op)
+        |> ProductDomain.all()
+        |> Enum.map(fn result -> Map.get(result, :name) end)
+        |> Enum.sort_by(fn result -> result end)
+
+      assert results == ["AVALUE", "VALUEZ"]
+    end
+
+    test "ne by association" do
+      insert(:product, name: "1", category: insert(:category, title: "AVALUE"))
+      insert(:product, name: "2", category: insert(:category, title: "VALUE"))
+      insert(:product, name: "3", category: insert(:category, title: "VALUEZ"))
+
+      op = [{:category_title, :ne, "VALUE"}]
+
+      results =
+        ProductTable
+        |> ProductDomain.filter_by(op)
+        |> ProductDomain.all()
+        |> Enum.map(fn result -> Map.get(result, :name) end)
+        |> Enum.sort_by(fn result -> result end)
+
+      assert results == ["1", "3"]
+    end
+
+    test "gt" do
+      insert(:product, name: "AVALUE")
+      insert(:product, name: "VALUE")
+      insert(:product, name: "VALUEZ")
+
+      op = [{:name, :gt, "VALUE"}]
+
+      results =
+        ProductTable
+        |> ProductDomain.filter_by(op)
+        |> ProductDomain.all()
+        |> Enum.map(fn result -> Map.get(result, :name) end)
+
+      assert results == ["VALUEZ"]
+    end
+
+    test "gt by association" do
+      insert(:product, name: "1", category: insert(:category, title: "AVALUE"))
+      insert(:product, name: "2", category: insert(:category, title: "VALUE"))
+      insert(:product, name: "3", category: insert(:category, title: "VALUEZ"))
+
+      op = [{:category_title, :gt, "VALUE"}]
+
+      results =
+        ProductTable
+        |> ProductDomain.filter_by(op)
+        |> ProductDomain.all()
+        |> Enum.map(fn result -> Map.get(result, :name) end)
+
+      assert results == ["3"]
+    end
+
+    test "ge" do
+      insert(:product, name: "AVALUE")
+      insert(:product, name: "VALUE")
+      insert(:product, name: "VALUEZ")
+
+      op = [{:name, :ge, "VALUE"}]
+
+      results =
+        ProductTable
+        |> ProductDomain.filter_by(op)
+        |> ProductDomain.all()
+        |> Enum.map(fn result -> Map.get(result, :name) end)
+
+      assert Enum.sort(results) == ["VALUE", "VALUEZ"]
+    end
+
+    test "ge by association" do
+      insert(:product, name: "1", category: insert(:category, title: "AVALUE"))
+      insert(:product, name: "2", category: insert(:category, title: "VALUE"))
+      insert(:product, name: "3", category: insert(:category, title: "VALUEZ"))
+
+      op = [{:category_title, :ge, "VALUE"}]
+
+      results =
+        ProductTable
+        |> ProductDomain.filter_by(op)
+        |> ProductDomain.all()
+        |> Enum.map(fn result -> Map.get(result, :name) end)
+
+      assert results == ["2", "3"]
+    end
+
+    test "lt" do
+      insert(:product, name: "AVALUE")
+      insert(:product, name: "VALUE")
+      insert(:product, name: "VALUEZ")
+
+      op = [{:name, :lt, "VALUE"}]
+
+      results =
+        ProductTable
+        |> ProductDomain.filter_by(op)
+        |> ProductDomain.all()
+        |> Enum.map(fn result -> Map.get(result, :name) end)
+
+      assert results == ["AVALUE"]
+    end
+
+    test "lt by association" do
+      insert(:product, name: "1", category: insert(:category, title: "AVALUE"))
+      insert(:product, name: "2", category: insert(:category, title: "VALUE"))
+      insert(:product, name: "3", category: insert(:category, title: "VALUEZ"))
+
+      op = [{:category_title, :lt, "VALUE"}]
+
+      results =
+        ProductTable
+        |> ProductDomain.filter_by(op)
+        |> ProductDomain.all()
+        |> Enum.map(fn result -> Map.get(result, :name) end)
+
+      assert results == ["1"]
+    end
+
+    test "le" do
+      insert(:product, name: "AVALUE")
+      insert(:product, name: "VALUE")
+      insert(:product, name: "VALUEZ")
+
+      op = [{:name, :le, "VALUE"}]
+
+      results =
+        ProductTable
+        |> ProductDomain.filter_by(op)
+        |> ProductDomain.all()
+        |> Enum.map(fn result -> Map.get(result, :name) end)
+
+      assert Enum.sort(results) == ["AVALUE", "VALUE"]
+    end
+
+    test "le by association" do
+      insert(:product, name: "1", category: insert(:category, title: "AVALUE"))
+      insert(:product, name: "2", category: insert(:category, title: "VALUE"))
+      insert(:product, name: "3", category: insert(:category, title: "VALUEZ"))
+
+      op = [{:category_title, :le, "VALUE"}]
+
+      results =
+        ProductTable
+        |> ProductDomain.filter_by(op)
+        |> ProductDomain.all()
+        |> Enum.map(fn result -> Map.get(result, :name) end)
+
+      assert results == ["1", "2"]
+    end
+
+    test "lk" do
+      insert(:product, name: "NOT ME")
+      insert(:product, name: "AVALUE")
+      insert(:product, name: "VALUE")
+      insert(:product, name: "VALUEZ")
+      insert(:product, name: "OR ME")
+
+      op = [{:name, :lk, "VALUE"}]
+
+      results =
+        ProductTable
+        |> ProductDomain.filter_by(op)
+        |> ProductDomain.all()
+        |> Enum.map(fn result -> Map.get(result, :name) end)
+
+      assert Enum.sort(results) == ["AVALUE", "VALUE", "VALUEZ"]
+    end
+
+    test "lk by association" do
+      insert(:product, name: "1", category: insert(:category, title: "NOT ME"))
+      insert(:product, name: "2", category: insert(:category, title: "AVALUE"))
+      insert(:product, name: "3", category: insert(:category, title: "VALUE"))
+      insert(:product, name: "4", category: insert(:category, title: "VALUEZ"))
+      insert(:product, name: "5", category: insert(:category, title: "OR ME"))
+
+      op = [{:category_title, :lk, "VALUE"}]
+
+      results =
+        ProductTable
+        |> ProductDomain.filter_by(op)
+        |> ProductDomain.all()
+        |> Enum.map(fn result -> Map.get(result, :name) end)
+
+      assert results == ["2", "3", "4"]
+    end
+
+    test "in" do
+      insert(:product, name: "FIND ME")
+      insert(:product, name: "VALUE")
+
+      op = [{:name, :in, ["FIND ME", "AND ME"]}]
+
+      results =
+        ProductTable
+        |> ProductDomain.filter_by(op)
+        |> ProductDomain.all()
+        |> Enum.map(fn result -> Map.get(result, :name) end)
+
+      assert Enum.sort(results) == ["FIND ME"]
+    end
+
+    test "in by association" do
+      insert(:product, name: "1", category: insert(:category, title: "FIND ME"))
+      insert(:product, name: "2", category: insert(:category, title: "VALUE"))
+
+      op = [{:category_title, :in, ["FIND ME", "AND ME"]}]
+
+      results =
+        ProductTable
+        |> ProductDomain.filter_by(op)
+        |> ProductDomain.all()
+        |> Enum.map(fn result -> Map.get(result, :name) end)
+
+      assert Enum.sort(results) == ["1"]
     end
   end
 
@@ -400,7 +634,7 @@ defmodule DomainLogic.DomainTest do
           {"name", "eq", "BOB"}
         ])
 
-      assert filter == [{:id, :eq, 1001}, {:name, :eq, "BOB"}]
+      assert filter == [{:id, :eq, 1001}, {"name", "eq", "BOB"}]
     end
 
     test "fail on first invalid field" do
@@ -423,7 +657,7 @@ defmodule DomainLogic.DomainTest do
           "WRONG"
         ])
 
-      assert reason == "Invalid filter : Invalid format"
+      assert reason == "Invalid filter : Invalid filter format"
     end
   end
 
@@ -435,7 +669,7 @@ defmodule DomainLogic.DomainTest do
           {"name", "eq", "BOB"}
         ])
 
-      assert filter == [{:id, :eq, 1001}, {:name, :eq, "BOB"}]
+      assert filter == [{:id, :eq, 1001}, {"name", "eq", "BOB"}]
     end
 
     test "remove invalid filters" do
@@ -448,11 +682,15 @@ defmodule DomainLogic.DomainTest do
           "WRONG"
         ])
 
-      assert filter == [{:id, :eq, 1001}, {:name, :eq, "BOB"}]
+      assert filter == [{:id, :eq, 1001}, {"name", "eq", "BOB"}]
     end
   end
 
   describe "#sort_by" do
+    test "fields" do
+      validate_sort_fields(ProductDomain)
+    end
+
     test "invalid field name" do
       assert_raise ArgumentError, ~r/Invalid field/, fn ->
         ProductDomain.sort_by(ProductTable, {:wrong, :asc})
@@ -464,6 +702,74 @@ defmodule DomainLogic.DomainTest do
         ProductDomain.sort_by(ProductTable, {:id, :invalid})
       end
     end
+
+    test "asc" do
+      insert(:product, name: "AAA")
+      insert(:product, name: "DDD")
+      insert(:product, name: "BBB")
+      insert(:product, name: "CCC")
+
+      op = [{:name, :asc}]
+
+      results =
+        ProductTable
+        |> ProductDomain.sort_by(op)
+        |> ProductDomain.repo().all()
+        |> Enum.map(fn result -> Map.get(result, :name) end)
+
+      assert results == ["AAA", "BBB", "CCC", "DDD"]
+    end
+
+    test "asc by association" do
+      insert(:product, name: "1", category: insert(:category, title: "AAA"))
+      insert(:product, name: "2", category: insert(:category, title: "DDD"))
+      insert(:product, name: "3", category: insert(:category, title: "BBB"))
+      insert(:product, name: "4", category: insert(:category, title: "CCC"))
+
+      op = [{:category_title, :asc}]
+
+      results =
+        ProductTable
+        |> ProductDomain.sort_by(op)
+        |> ProductDomain.repo().all()
+        |> Enum.map(fn result -> Map.get(result, :name) end)
+
+      assert results == ["1", "3", "4", "2"]
+    end
+
+    test "desc" do
+      insert(:product, name: "AAA")
+      insert(:product, name: "DDD")
+      insert(:product, name: "BBB")
+      insert(:product, name: "CCC")
+
+      op = [{:name, :desc}]
+
+      results =
+        ProductTable
+        |> ProductDomain.sort_by(op)
+        |> ProductDomain.repo().all()
+        |> Enum.map(fn result -> Map.get(result, :name) end)
+
+      assert results == ["DDD", "CCC", "BBB", "AAA"]
+    end
+
+    test "desc by association" do
+      insert(:product, name: "1", category: insert(:category, title: "AAA"))
+      insert(:product, name: "2", category: insert(:category, title: "DDD"))
+      insert(:product, name: "3", category: insert(:category, title: "BBB"))
+      insert(:product, name: "4", category: insert(:category, title: "CCC"))
+
+      op = [{:category_title, :desc}]
+
+      results =
+        ProductTable
+        |> ProductDomain.sort_by(op)
+        |> ProductDomain.repo().all()
+        |> Enum.map(fn result -> Map.get(result, :name) end)
+
+      assert results == ["2", "4", "3", "1"]
+    end
   end
 
   describe "#sort_validate" do
@@ -474,7 +780,7 @@ defmodule DomainLogic.DomainTest do
           {"name", "asc"}
         ])
 
-      assert sort == [{:id, :asc}, {:name, :asc}]
+      assert sort == [{:id, :asc}, {"name", "asc"}]
     end
 
     test "fail on first invalid field" do
@@ -497,7 +803,7 @@ defmodule DomainLogic.DomainTest do
           "WRONG"
         ])
 
-      assert reason == "Invalid sort : Invalid format"
+      assert reason == "Invalid sort : Invalid sort format"
     end
   end
 
@@ -509,7 +815,7 @@ defmodule DomainLogic.DomainTest do
           {"name", "asc"}
         ])
 
-      assert sort == [{:id, :asc}, {:name, :asc}]
+      assert sort == [{:id, :asc}, {"name", "asc"}]
     end
 
     test "remove invalid sorts" do
@@ -522,7 +828,7 @@ defmodule DomainLogic.DomainTest do
           "WRONG"
         ])
 
-      assert sort == [{:id, :asc}, {:name, :asc}]
+      assert sort == [{:id, :asc}, {"name", "asc"}]
     end
   end
 

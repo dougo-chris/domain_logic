@@ -23,8 +23,8 @@ defmodule DomainLogic.Domain.Mixfile do
     ]
   end
 
-  defp elixirc_paths(:test), do: ["lib", "task", "priv", "test/support"]
-  defp elixirc_paths(_), do: ["lib", "task"]
+  defp elixirc_paths(:test), do: ["lib", "task", "priv", "test/shared", "test/support"]
+  defp elixirc_paths(_), do: ["lib", "task", "test/shared"]
 
   defp deps do
     [

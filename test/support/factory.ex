@@ -6,7 +6,8 @@ defmodule DomainLogic.Domain.Factory do
 
   def category_factory do
     %DomainLogic.Test.Db.CategoryTable{
-      title: "Elixir"
+      title: "Elixir",
+      code: sequence(:code, &(&1))
     }
   end
 

@@ -22,7 +22,7 @@ Given an Ecto Table definitions
   end
 ```
 
-Create a domain definition to access the table
+Create a domain definition to access the table via the repo
 ```
   defmodule MyApp.Db.ProductDomain do
     @moduledoc false
@@ -36,12 +36,16 @@ Create a domain definition to access the table
       filter(:name, :string)
       filter(:price, :integer)
       filter(:available, :boolean)
+      filter(:category_title, :string, association: :category, source: :title)
+      filter(:category_code, :integer, association: :category, source: :code)
     end
 
     register_sort do
       sort(:id)
       sort(:name)
       sort(:price)
+      sort(:category_title, association: :category, source: :title)
+      sort(:category_code, association: :category, source: :code)
     end
   end
 ```
@@ -63,17 +67,22 @@ products =
 ### Find by value
 Note : If there are more than one record an exception is raised
 ```
-{:ok, product} = ProductDomain.find({:category_id, 1001})
+{:ok, product} = ProductDomain.find(1001)
+{:ok, product} = ProductDomain.find({:id, 1001})
+{:ok, product} = ProductDomain.find(ProductDomain, 1001)
+{:ok, product} = ProductDomain.find(ProductDomain, {:id, 1001})
 ```
 
 ### Get one record
 Note : If there are more than one record an exception is raised
 ```
+{:ok, product} = ProductDomain.one()
 {:ok, product} = ProductDomain.one(ProductTable)
 ```
 
 ### Get all records
 ```
+products = ProductDomain.all()
 products = ProductDomain.all(ProductTable)
 ```
 
@@ -82,11 +91,14 @@ We use the scriviner from [https://github.com/drewolson/scrivener_ecto]
 
 ```
 products = ProductDomain.paginate({page, page_size})
+products = ProductDomain.paginate(ProductTable, {page, page_size})
 ```
 
 ### Counting the records
 ```
 counter = ProductDomain.count()
+counter = ProductDomain.count(InterfaceTable)
+counter = ProductDomain.count(InterfaceTable, :name)
 ```
 
 ### Filtering
@@ -95,6 +107,8 @@ Fields that can be filtered are listed with the field type
   register_filter do
     filter(:id, :integer)
     filter(:name, :string)
+    filter(:hostname, :string, association: :device_record)
+    filter(:device_management_ip, :integer, association: :device_record, source: :management_ip)
   end
 ```
 
@@ -113,6 +127,8 @@ The domain defines the fields you can sort by
   register_sort do
     sort(:id)
     sort(:name)
+    sort(:hostname, :string, association: :device_record)
+    sort(:device_management_ip, :integer, association: :device_record, source: :management_ip)
   end
 ```
 
@@ -194,46 +210,3 @@ Return a cleaned sort list
 ```
 [{:id, :asc}] = ProductDomain.sort_clean([{:id, :asc}, {:unknown, :wrong}])
 ```
-
-## Coverting Query Params to Queries
-DomainLogic.Domain.Params will convert parameters (like in a API request) into valid query commands
-```
-  def index(conn, params) do
-    category = conn.assigns[:current_category]
-
-    filters = Params.filter(params, &ProductDomain.filter_clean/1)
-    sorts = Params.sort(params, &ProductDomain.sort_clean/1)
-    pagination = Params.pagination(params)
-
-    products =
-      ProductTable
-      |> ProductDomain.filter_by({:category_id, :eq, category.id})
-      |> ProductDomain.filter_by(filters)
-      |> ProductDomain.sort_by(sorts)
-      |> ProductDomain.preload_with([:category, :variants])
-      |> ProductDomain.paginate(pagination)
-
-    render(conn, "index.json", products: products)
-  end
-```
-
-## DEVELOPMENT
-```./bin/domain_logic clean```     To clean runtime dependencies
-
-```./bin/domain_logic build```     To install the dependencies
-
-```./bin/domain_logic upgrade```   To upgrade the dependencies
-
-```./bin/domain_logic iex```       To run the elixir command line
-
-```./bin/domain_logic mix```       To run a mix task
-
-## TESTING
-
-```./bin/domain_logic test```            Run the tests
-
-```./bin/domain_logic test dialyzer```   Execute dialyzer
-
-```./bin/domain_logic test watch```      Continuously run the tests
-
-```./bin/domain_logic test dev```        Continuously run the dev tests

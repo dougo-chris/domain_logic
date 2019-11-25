@@ -24,6 +24,7 @@ defmodule DomainLogic.Domain.DataCase do
       import Ecto.Query
 
       import DomainLogic.Domain.Factory
+      import DomainLogic.Test.LogicFieldTest
 
       import DomainLogic.Domain.DataCase
     end

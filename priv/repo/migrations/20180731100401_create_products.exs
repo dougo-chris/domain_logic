@@ -4,6 +4,7 @@ defmodule Turbo.Ecto.Repo.Migrations.CreateProducts do
   def change do
     create table(:dl_categories) do
       add :title, :string
+      add :code, :integer
 
       timestamps(type: :utc_datetime)
     end
