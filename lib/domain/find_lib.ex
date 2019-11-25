@@ -44,7 +44,8 @@ defmodule DomainLogic.Domain.FindLib do
       Fetch a Records by the query and field == value
       """
       @impl true
-      @spec find(Ecto.Queryable.t(), {atom, any} | integer) :: {:ok, Ecto.Schema.t()} | {:error, String.t()}
+      @spec find(Ecto.Queryable.t(), {atom, any} | integer) ::
+              {:ok, Ecto.Schema.t()} | {:error, String.t()}
       def find(query, {field, value}) do
         case @repo.get_by(query, [{field, value}]) do
           nil ->

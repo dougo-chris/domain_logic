@@ -25,7 +25,8 @@ defmodule DomainLogic.Domain.SortLib do
       defoverridable sort_fields: 0
 
       @impl true
-      @spec sort_by(Ecto.Queryable.t(), SortLib.sort() | list(SortLib.sort())) :: Ecto.Queryable.t()
+      @spec sort_by(Ecto.Queryable.t(), SortLib.sort() | list(SortLib.sort())) ::
+              Ecto.Queryable.t()
       def sort_by(query, sorts) when is_list(sorts) do
         fields = sort_fields()
         SortLib.__sort_builder__(query, sorts, fields)
@@ -34,7 +35,8 @@ defmodule DomainLogic.Domain.SortLib do
       def sort_by(query, sort), do: sort_by(query, [sort])
 
       @impl true
-      @spec sort_validate(SortLib.sort() | list(SortLib.sort())) :: {:ok, list(SortLib.sort())} | {:error, String.t()}
+      @spec sort_validate(SortLib.sort() | list(SortLib.sort())) ::
+              {:ok, list(SortLib.sort())} | {:error, String.t()}
       def sort_validate(sorts) when is_list(sorts) do
         fields = sort_fields()
 

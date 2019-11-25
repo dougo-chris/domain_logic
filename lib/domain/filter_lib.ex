@@ -23,7 +23,8 @@ defmodule DomainLogic.Domain.FilterLib do
 
   @type filter_type :: :integer | :string
   @type filter_field :: {atom, filter_type}
-  @type filter :: {atom | String.t(), :gt | :ge | :lt | :le | :lk | :in | :ne | :eq | String.t(), any()}
+  @type filter ::
+          {atom | String.t(), :gt | :ge | :lt | :le | :lk | :in | :ne | :eq | String.t(), any()}
 
   @callback filter_fields() :: list(filter_field)
   @callback filter_by(Ecto.Schema.t(), filter | list(filter)) :: Ecto.Queryable.t()
@@ -42,7 +43,8 @@ defmodule DomainLogic.Domain.FilterLib do
       defoverridable filter_fields: 0
 
       @impl true
-      @spec filter_by(Ecto.Queryable.t(), FilterLib.filter() | list(FilterLib.filter())) :: Ecto.Queryable.t()
+      @spec filter_by(Ecto.Queryable.t(), FilterLib.filter() | list(FilterLib.filter())) ::
+              Ecto.Queryable.t()
       def filter_by(query, filters) when is_list(filters) do
         fields = filter_fields()
         FilterLib.__filter_builder__(query, filters, fields)
@@ -68,7 +70,8 @@ defmodule DomainLogic.Domain.FilterLib do
       def filter_validate(filter), do: filter_validate([filter])
 
       @impl true
-      @spec filter_clean(FilterLib.filter() | list(FilterLib.filter())) :: list(FilterLib.filter())
+      @spec filter_clean(FilterLib.filter() | list(FilterLib.filter())) ::
+              list(FilterLib.filter())
       def filter_clean(filters) when is_list(filters) do
         fields = filter_fields()
 
@@ -139,7 +142,8 @@ defmodule DomainLogic.Domain.FilterLib do
   def __filter_validator__(acc, [], _fields), do: acc
 
   def __filter_validator__(acc, [{name, op, value} | tail], fields) do
-    with {:ok, {_field_name, field_type, _field_association}} <- validate_field_name(fields, name),
+    with {:ok, {_field_name, field_type, _field_association}} <-
+           validate_field_name(fields, name),
          {:ok, field_op} <- validate_field_op(op, field_type),
          {:ok, _field_value} <- validate_field_value(field_type, field_op, value) do
       __filter_validator__([{name, op, value} | acc], tail, fields)
@@ -157,7 +161,8 @@ defmodule DomainLogic.Domain.FilterLib do
   def __filter_cleaner__(acc, [], _fields), do: acc
 
   def __filter_cleaner__(acc, [{name, op, value} | tail], fields) do
-    with {:ok, {_field_name, field_type, _field_association}} <- validate_field_name(fields, name),
+    with {:ok, {_field_name, field_type, _field_association}} <-
+           validate_field_name(fields, name),
          {:ok, field_op} <- validate_field_op(op, field_type),
          {:ok, _field_value} <- validate_field_value(field_type, field_op, value) do
       __filter_cleaner__([{name, op, value} | acc], tail, fields)
@@ -220,7 +225,10 @@ defmodule DomainLogic.Domain.FilterLib do
   end
 
   defp filter_builder_item(query, name, :lk, value, association) do
-    from(q in query, join: as in assoc(q, ^association), where: like(field(as, ^name), ^"%#{value}%"))
+    from(q in query,
+      join: as in assoc(q, ^association),
+      where: like(field(as, ^name), ^"%#{value}%")
+    )
   end
 
   defp filter_builder_item(query, name, :in, value, association) do
