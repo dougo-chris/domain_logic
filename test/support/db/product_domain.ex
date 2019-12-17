@@ -12,6 +12,7 @@ defmodule DomainLogic.Test.Db.ProductDomain do
     filter(:available, :boolean)
     filter(:category_title, :string, association: :category, source: :title)
     filter(:category_code, :integer, association: :category, source: :code)
+    filter(:variant_code, :string, association: :variants, source: :code)
   end
 
   register_sort do
@@ -20,5 +21,6 @@ defmodule DomainLogic.Test.Db.ProductDomain do
     sort(:price)
     sort(:category_title, association: :category, source: :title)
     sort(:category_code, association: :category, source: :code)
+    sort(:variant_code, association: :variants, source: :code)
   end
 end
