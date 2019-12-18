@@ -11,8 +11,11 @@ defmodule DomainLogic.Test.LogicFieldTest do
         {_name, {field_name, field_type, nil}} ->
           schema_type = unquote(domain).table().__schema__(:type, field_name)
           assert(
-            schema_type == field_type || (schema_type == :id && field_type == :integer),
-            "Invalid filter : #{field_name}"
+            schema_type == field_type ||
+              (schema_type == :id && field_type == :integer) ||
+              (schema_type == :naive_datetime && field_type == :date) ||
+              (schema_type == :utc_datetime && field_type == :date),
+            "Invalid filter : #{field_name} #{schema_type} #{field_type}"
           )
 
         {_name, {field_name, field_type, association}} ->
@@ -58,12 +61,18 @@ defmodule DomainLogic.Test.LogicFieldTest do
     %{queryable: queryable} = domain.table().__schema__(:association, parent)
     %{queryable: queryable} = queryable.__schema__(:association, child)
     schema_type = queryable.__schema__(:type, field_name)
-    schema_type == field_type || (schema_type == :id && field_type == :integer)
+    schema_type == field_type ||
+      (schema_type == :id && field_type == :integer) ||
+      (schema_type == :naive_datetime && field_type == :date) ||
+      (schema_type == :utc_datetime && field_type == :date)
   end
 
   def __validate_filter_association__(field_name, field_type, _domain, %{queryable: queryable}) do
     schema_type = queryable.__schema__(:type, field_name)
-    schema_type == field_type || (schema_type == :id && field_type == :integer)
+    schema_type == field_type ||
+      (schema_type == :id && field_type == :integer) ||
+      (schema_type == :naive_datetime && field_type == :date) ||
+      (schema_type == :utc_datetime && field_type == :date)
   end
 
   def __validate_sort_association__(field_name, domain, %{through: [parent, child]}) do
