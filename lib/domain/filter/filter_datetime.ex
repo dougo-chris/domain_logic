@@ -9,7 +9,7 @@ defmodule DomainLogic.Domain.Filter.FilterDatetime do
     {:ok, nil}
   end
 
-  def validate_value(nil, op) do
+  def validate_value(nil, _op) do
     {:error, "Invalid operation for nil datetime"}
   end
 

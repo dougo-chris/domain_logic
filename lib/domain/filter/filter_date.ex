@@ -9,8 +9,8 @@ defmodule DomainLogic.Domain.Filter.FilterDate do
     {:ok, nil}
   end
 
-  def validate_value(nil, op) do
-    {:error, "Invalid operation for nil date #{op}"}
+  def validate_value(nil, _op) do
+    {:error, "Invalid operation for nil date"}
   end
 
   def validate_value(value, op) when is_binary(value) do

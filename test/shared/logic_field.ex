@@ -1,7 +1,7 @@
-defmodule DomainLogic.Test.LogicFieldTest do
+defmodule DomainLogic.Test.LogicField do
   @moduledoc false
 
-  alias DomainLogic.Test.LogicFieldTest
+  alias DomainLogic.Test.LogicField
 
   defmacro validate_filter_fields(domain) do
     quote do
@@ -20,7 +20,7 @@ defmodule DomainLogic.Test.LogicFieldTest do
 
         {_name, {field_name, field_type, association}} ->
           assert(
-            LogicFieldTest.__validate_filter_association__(
+            LogicField.__validate_filter_association__(
               field_name,
               field_type,
               unquote(domain),
@@ -46,7 +46,7 @@ defmodule DomainLogic.Test.LogicFieldTest do
 
         {_name, {field_name, association}} ->
           assert(
-            LogicFieldTest.__validate_sort_association__(
+            LogicField.__validate_sort_association__(
               field_name,
               unquote(domain),
               unquote(domain).table().__schema__(:association, association)
