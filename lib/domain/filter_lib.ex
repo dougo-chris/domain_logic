@@ -200,8 +200,16 @@ defmodule DomainLogic.Domain.FilterLib do
     from(q in query, where: field(q, ^name) in ^value)
   end
 
+  defp filter_builder_item(query, name, :ne, nil, nil) do
+    from(q in query, where: not is_nil(field(q, ^name)))
+  end
+
   defp filter_builder_item(query, name, :ne, value, nil) do
     from(q in query, where: field(q, ^name) != ^value)
+  end
+
+  defp filter_builder_item(query, name, _op, nil, nil) do
+    from(q in query, where: is_nil(field(q, ^name)))
   end
 
   defp filter_builder_item(query, name, _op, value, nil) do
@@ -235,8 +243,16 @@ defmodule DomainLogic.Domain.FilterLib do
     from(q in query, join: as in assoc(q, ^association), where: field(as, ^name) in ^value)
   end
 
+  defp filter_builder_item(query, name, :ne, nil, association) do
+    from(q in query, join: as in assoc(q, ^association), where: not is_nil(field(as, ^name)))
+  end
+
   defp filter_builder_item(query, name, :ne, value, association) do
     from(q in query, join: as in assoc(q, ^association), where: field(as, ^name) != ^value)
+  end
+
+  defp filter_builder_item(query, name, _, nil, association) do
+    from(q in query, join: as in assoc(q, ^association), where: is_nil(field(as, ^name)))
   end
 
   defp filter_builder_item(query, name, _, value, association) do

@@ -11,16 +11,16 @@ defmodule DomainLogic.Domain.Filter.FilterIntegerTest do
     end)
   end
 
-  test "nil value" do
-    assert FilterInteger.validate_value(nil, :gt) == {:ok, nil}
+  test "nil :eq" do
+    assert FilterInteger.validate_value(nil, :eq) == {:ok, nil}
   end
 
-  test "nil :in" do
-    assert FilterInteger.validate_value(nil, :in) == {:ok, [nil]}
+  test "nil :ne" do
+    assert FilterInteger.validate_value(nil, :ne) == {:ok, nil}
   end
 
-  test "nil :ni" do
-    assert FilterInteger.validate_value(nil, :in) == {:ok, [nil]}
+  test "invalid nil operation" do
+    assert FilterInteger.validate_value(nil, :gt) == {:error, "Invalid operation for nil integer"}
   end
 
   describe "validate_value : integer" do
@@ -40,6 +40,10 @@ defmodule DomainLogic.Domain.Filter.FilterIntegerTest do
       assert FilterInteger.validate_value([1111, nil], :in) == {:ok, [1111, nil]}
     end
 
+    test "in empty" do
+      assert FilterInteger.validate_value([], :in) == {:ok, []}
+    end
+
     test "ni value" do
       assert FilterInteger.validate_value(1111, :ni) == {:ok, [1111]}
     end
@@ -48,6 +52,9 @@ defmodule DomainLogic.Domain.Filter.FilterIntegerTest do
       assert FilterInteger.validate_value([1111, 2222], :ni) == {:ok, [1111, 2222]}
     end
 
+    test "ni empty" do
+      assert FilterInteger.validate_value([], :ni) == {:ok, []}
+    end
     test "ni invalid list" do
       assert FilterInteger.validate_value([1111, nil], :ni) == {:ok, [1111, nil]}
     end

@@ -1,8 +1,13 @@
 defmodule DomainLogic.Domain.Filter.FilterString do
   @moduledoc false
 
-  def validate_value(nil, op) when op in [:in, :ni], do: {:ok, [nil]}
-  def validate_value(nil, _op), do: {:ok, nil}
+  def validate_value(nil, op) when op in [:ne, :eq] do
+    {:ok, nil}
+  end
+
+  def validate_value(nil, _op) do
+    {:error, "Invalid operation for nil string"}
+  end
 
   def validate_value(value, op) when op in [:in, :ni] and is_binary(value) do
     {:ok, [value]}

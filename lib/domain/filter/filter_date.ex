@@ -5,7 +5,13 @@ defmodule DomainLogic.Domain.Filter.FilterDate do
     {:error, "Invalid operation : #{op}"}
   end
 
-  def validate_value(nil, _op), do: {:ok, nil}
+  def validate_value(nil, op) when op in [:ne, :eq] do
+    {:ok, nil}
+  end
+
+  def validate_value(nil, op) do
+    {:error, "Invalid operation for nil date #{op}"}
+  end
 
   def validate_value(value, op) when is_binary(value) do
     with [ys, ms, ds] <- String.split(value, ":"),

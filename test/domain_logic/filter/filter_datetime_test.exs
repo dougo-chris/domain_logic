@@ -11,8 +11,16 @@ defmodule DomainLogic.Domain.Filter.FilterDatetimeTest do
     end)
   end
 
-  test "nil value" do
-    assert FilterDatetime.validate_value(nil, :gt) == {:ok, nil}
+  test "nil eq" do
+    assert FilterDatetime.validate_value(nil, :eq) == {:ok, nil}
+  end
+
+  test "nil ne" do
+    assert FilterDatetime.validate_value(nil, :ne) == {:ok, nil}
+  end
+
+  test "invalid nil operation" do
+    assert FilterDatetime.validate_value(nil, :gt) == {:error, "Invalid operation for nil datetime"}
   end
 
   describe "validate_value : string" do

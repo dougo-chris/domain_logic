@@ -381,12 +381,44 @@ defmodule DomainLogic.DomainTest do
       assert results == ["VALUE"]
     end
 
+    test "eq and nil value" do
+      insert(:product, name: "AVALUE")
+      insert(:product, name: nil)
+      insert(:product, name: "VALUEZ")
+
+      op = [{:name, :eq, nil}]
+
+      results =
+        ProductTable
+        |> ProductDomain.filter_by(op)
+        |> ProductDomain.all()
+        |> Enum.map(fn result -> Map.get(result, :name) end)
+
+      assert results == [nil]
+    end
+
     test "eq by association" do
       insert(:product, name: "1", category: insert(:category, title: "AVALUE"))
       insert(:product, name: "2", category: insert(:category, title: "VALUE"))
       insert(:product, name: "3", category: insert(:category, title: "VALUEZ"))
 
       op = [{:category_title, :eq, "VALUE"}]
+
+      results =
+        ProductTable
+        |> ProductDomain.filter_by(op)
+        |> ProductDomain.all()
+        |> Enum.map(fn result -> Map.get(result, :name) end)
+
+      assert results == ["2"]
+    end
+
+    test "eq and nil by association" do
+      insert(:product, name: "1", category: insert(:category, title: "AVALUE"))
+      insert(:product, name: "2", category: insert(:category, title: nil))
+      insert(:product, name: "3", category: insert(:category, title: "VALUEZ"))
+
+      op = [{:category_title, :eq, nil}]
 
       results =
         ProductTable
@@ -414,12 +446,46 @@ defmodule DomainLogic.DomainTest do
       assert results == ["AVALUE", "VALUEZ"]
     end
 
+    test "ne and nil" do
+      insert(:product, name: "AVALUE")
+      insert(:product, name: nil)
+      insert(:product, name: "VALUEZ")
+
+      op = [{:name, :ne, nil}]
+
+      results =
+        ProductTable
+        |> ProductDomain.filter_by(op)
+        |> ProductDomain.all()
+        |> Enum.map(fn result -> Map.get(result, :name) end)
+        |> Enum.sort_by(fn result -> result end)
+
+      assert results == ["AVALUE", "VALUEZ"]
+    end
+
     test "ne by association" do
       insert(:product, name: "1", category: insert(:category, title: "AVALUE"))
       insert(:product, name: "2", category: insert(:category, title: "VALUE"))
       insert(:product, name: "3", category: insert(:category, title: "VALUEZ"))
 
       op = [{:category_title, :ne, "VALUE"}]
+
+      results =
+        ProductTable
+        |> ProductDomain.filter_by(op)
+        |> ProductDomain.all()
+        |> Enum.map(fn result -> Map.get(result, :name) end)
+        |> Enum.sort_by(fn result -> result end)
+
+      assert results == ["1", "3"]
+    end
+
+    test "ne and nil by association" do
+      insert(:product, name: "1", category: insert(:category, title: "AVALUE"))
+      insert(:product, name: "2", category: insert(:category, title: nil))
+      insert(:product, name: "3", category: insert(:category, title: "VALUEZ"))
+
+      op = [{:category_title, :ne, nil}]
 
       results =
         ProductTable
