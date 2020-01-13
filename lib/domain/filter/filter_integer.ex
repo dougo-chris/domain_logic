@@ -9,7 +9,7 @@ defmodule DomainLogic.Domain.Filter.FilterInteger do
     {:ok, nil}
   end
 
-  def validate_value(nil, op) do
+  def validate_value(nil, _op) do
     {:error, "Invalid operation for nil integer"}
   end
 
