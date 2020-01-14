@@ -20,7 +20,7 @@ defmodule DomainLogic.Domain.Filter.FilterDatetimeTest do
   end
 
   test "invalid nil operation" do
-    assert FilterDatetime.validate_value(nil, :gt) == {:error, "Invalid operation for nil datetime"}
+    assert FilterDatetime.validate_value(nil, :gt) == {:error, "Invalid operation for nil datetime : gt"}
   end
 
   describe "validate_value : string" do

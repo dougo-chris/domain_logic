@@ -5,24 +5,16 @@ defmodule DomainLogic.Domain.Filter.FilterString do
     {:ok, nil}
   end
 
-  def validate_value(nil, _op) do
-    {:error, "Invalid operation for nil string"}
+  def validate_value(nil, op) do
+    {:error, "Invalid operation for nil string : #{op}"}
   end
 
-  def validate_value(value, op) when op in [:in, :ni] and is_binary(value) do
-    {:ok, [value]}
-  end
-
-  def validate_value(value, op) when op in [:in, :ni] and is_integer(value) do
-    {:ok, [Integer.to_string(value)]}
-  end
-
-  def validate_value(value, op) when op in [:in, :ni] when is_list(value) do
+  def validate_value(value, op) when op in [:in, :ni] and is_list(value) do
     values =
       value
       |> Enum.map(fn
-        value when value == nil ->
-          {:ok, nil}
+        nil ->
+          {:error, "Invalid value for string"}
 
         value when is_binary(value) ->
           {:ok, value}
@@ -39,6 +31,10 @@ defmodule DomainLogic.Domain.Filter.FilterString do
     else
       {:ok, Enum.map(values, fn {_, value} -> value end)}
     end
+  end
+
+  def validate_value(_value, op) when op in [:in, :ni] do
+    {:error, "Invalid value for string : #{op}"}
   end
 
   def validate_value(value, _op) when is_binary(value) do
