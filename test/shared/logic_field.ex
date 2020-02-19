@@ -10,11 +10,12 @@ defmodule DomainLogic.Test.LogicField do
       Enum.each(filter_fields, fn
         {_name, {field_name, field_type, nil}} ->
           schema_type = unquote(domain).table().__schema__(:type, field_name)
+
           assert(
             schema_type == field_type ||
               (schema_type == :id && field_type == :integer) ||
-              (schema_type == :naive_datetime && field_type == :date) ||
-              (schema_type == :utc_datetime && field_type == :date),
+              (schema_type == :naive_datetime && (field_type == :date || field_type == :datetime)) ||
+              (schema_type == :utc_datetime && (field_type == :date || field_type == :datetime)),
             "Invalid filter : #{field_name} #{schema_type} #{field_type}"
           )
 
@@ -61,18 +62,20 @@ defmodule DomainLogic.Test.LogicField do
     %{queryable: queryable} = domain.table().__schema__(:association, parent)
     %{queryable: queryable} = queryable.__schema__(:association, child)
     schema_type = queryable.__schema__(:type, field_name)
+
     schema_type == field_type ||
       (schema_type == :id && field_type == :integer) ||
-      (schema_type == :naive_datetime && field_type == :date) ||
-      (schema_type == :utc_datetime && field_type == :date)
+      (schema_type == :naive_datetime && (field_type == :date || field_type == :datetime)) ||
+      (schema_type == :utc_datetime && (field_type == :date || field_type == :datetime))
   end
 
   def __validate_filter_association__(field_name, field_type, _domain, %{queryable: queryable}) do
     schema_type = queryable.__schema__(:type, field_name)
+
     schema_type == field_type ||
       (schema_type == :id && field_type == :integer) ||
-      (schema_type == :naive_datetime && field_type == :date) ||
-      (schema_type == :utc_datetime && field_type == :date)
+      (schema_type == :naive_datetime && (field_type == :date || field_type == :datetime)) ||
+      (schema_type == :utc_datetime && (field_type == :date || field_type == :datetime))
   end
 
   def __validate_sort_association__(field_name, domain, %{through: [parent, child]}) do
